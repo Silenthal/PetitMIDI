@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{96D85827-3EBF-4BA1-8249-733B51F18396}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PetitMIDI</RootNamespace>
+    <AssemblyName>PetitMIDI</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)Build\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)Build\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="NAudio.dll">
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SolutionDir)Lib\NAudio.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="HighResTimer.cs" />
+    <Compile Include="MIDIMessage.cs" />
+    <Compile Include="MML\MMLSoundGenerator.cs" />
+    <Compile Include="MML\Event\DetuneEvent.cs" />
+    <Compile Include="MML\Event\EnvelopeEvent.cs" />
+    <Compile Include="MML\Event\EnvelopeReleaseEvent.cs" />
+    <Compile Include="MML\Event\InstrumentEvent.cs" />
+    <Compile Include="MML\Event\InvalidEvent.cs" />
+    <Compile Include="MML\Event\LengthEvent.cs" />
+    <Compile Include="MML\Event\MMLEvent.cs" />
+    <Compile Include="MML\Event\ModulationEvent.cs" />
+    <Compile Include="MML\Event\NoneEvent.cs" />
+    <Compile Include="MML\Event\NoteEvent.cs" />
+    <Compile Include="MML\Event\OctaveDecreaseEvent.cs" />
+    <Compile Include="MML\Event\OctaveEvent.cs" />
+    <Compile Include="MML\Event\OctaveIncreaseEvent.cs" />
+    <Compile Include="MML\Event\PanEvent.cs" />
+    <Compile Include="MML\Event\RestEvent.cs" />
+    <Compile Include="MML\Event\TempoEvent.cs" />
+    <Compile Include="MML\Event\TremoloEvent.cs" />
+    <Compile Include="MML\Event\VelocityDecreaseEvent.cs" />
+    <Compile Include="MML\Event\VelocityEvent.cs" />
+    <Compile Include="MML\Event\VelocityIncreaseEvent.cs" />
+    <Compile Include="MML\Event\VibratoEvent.cs" />
+    <Compile Include="MML\Event\VolumeEvent.cs" />
+    <Compile Include="MML\MMLChannel.cs" />
+    <Compile Include="MML\MMLStack.cs" />
+    <Compile Include="MML\MMLPlayer.cs" />
+    <Compile Include="Wave\SineWaveProvider32.cs" />
+    <Compile Include="Wave\SquareWaveProvider32.cs" />
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir "$(TargetDir)Lib\"
+xcopy /y /R "$(SolutionDir)Lib\*.dll" "$(TargetDir)Lib\"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
