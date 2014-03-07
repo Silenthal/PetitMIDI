@@ -34,6 +34,8 @@
                 this.swp[i].SetWaveFormat(44100, 1);
                 this.swp[i].Frequency = 400;
                 this.swp[i].Amplitude = 0.2f;
+                this.waveOutChannels[i] = new WasapiOut(AudioClientShareMode.Shared, 5);
+                this.waveOutChannels[i].Init(swp[i]);
             }
         }
 
@@ -56,12 +58,7 @@
             this.midiOut.Close();
             for (int i = 0; i < 8; i++)
             {
-                if (this.waveOutChannels[i] != null)
-                {
-                    this.waveOutChannels[i].Stop();
-                    this.waveOutChannels[i].Dispose();
-                    this.waveOutChannels[i] = null;
-                }
+                this.waveOutChannels[i].Stop();
             }
         }
 
@@ -90,19 +87,12 @@
         private void PlayPSGNote(MIDIMessage message)
         {
             StopPSGNote(message);
-            this.waveOutChannels[message.Channel] = new WasapiOut(AudioClientShareMode.Shared, 5);
-            this.waveOutChannels[message.Channel].Init(swp[message.Channel]);
             this.waveOutChannels[message.Channel].Play();
         }
 
         private void StopPSGNote(MIDIMessage message)
         {
-            if (this.waveOutChannels[message.Channel] != null)
-            {
-                this.waveOutChannels[message.Channel].Stop();
-                this.waveOutChannels[message.Channel].Dispose();
-                this.waveOutChannels[message.Channel] = null;
-            }
+            this.waveOutChannels[message.Channel].Stop();
         }
 
         public void ChangeDuty(int channel, float newDuty)
