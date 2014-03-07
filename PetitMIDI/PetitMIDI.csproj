@@ -85,8 +85,7 @@
     <Compile Include="MML\MMLChannel.cs" />
     <Compile Include="MML\MMLStack.cs" />
     <Compile Include="MML\MMLPlayer.cs" />
-    <Compile Include="Wave\SineWaveProvider32.cs" />
-    <Compile Include="Wave\SquareWaveProvider32.cs" />
+    <Compile Include="Wave\WaveGenerator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

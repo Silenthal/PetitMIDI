@@ -1,8 +1,5 @@
 ﻿namespace PetitMIDI.MML.Event
 {
-    /// <summary>
-    /// TODO: Update summary.
-    /// </summary>
     public class OctaveEvent : MMLEvent
     {
         private int octave;

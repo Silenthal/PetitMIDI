@@ -106,7 +106,7 @@
         private bool isNoteBeingPlayed;
 
         /// <summary>
-        /// Indicates the types of notes the channel is playing/
+        /// Indicates the types of notes the channel is playing.
         /// </summary>
         private NoteStyle noteStyle;
 

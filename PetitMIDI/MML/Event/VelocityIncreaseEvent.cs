@@ -1,20 +1,13 @@
 ﻿namespace PetitMIDI.MML.Event
 {
-    /// <summary>
-    /// TODO: Update summary.
-    /// </summary>
-    public class VelocityIncreaseEvent : MMLEvent
-    {
-        public int IncrementAmount
-        {
-            get;
-            set;
-        }
+	public class VelocityIncreaseEvent : MMLEvent
+	{
+		public int IncrementAmount;
 
-        public VelocityIncreaseEvent(int incrementAmount)
-            : base(EventTag.VelocityIncrease)
-        {
-            this.IncrementAmount = incrementAmount;
-        }
-    }
+		public VelocityIncreaseEvent(int incrementAmount)
+			: base(EventTag.VelocityIncrease)
+		{
+			this.IncrementAmount = incrementAmount;
+		}
+	}
 }

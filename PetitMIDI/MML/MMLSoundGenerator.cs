@@ -3,6 +3,7 @@
     using NAudio.Midi;
     using NAudio.Wave;
     using PetitMIDI.Wave;
+    using NAudio.CoreAudioApi;
 
     public enum NoteStyle
     {
@@ -18,18 +19,18 @@
     {
         private MidiOut midiOut;
 
-        private SquareWaveProvider32[] swp;
+        private WaveGenerator[] swp;
 
-        private WaveOut[] waveOutChannels;
+        private WasapiOut[] waveOutChannels;
 
         public MMLSoundGenerator()
         {
             this.midiOut = new NAudio.Midi.MidiOut(0);
-            this.waveOutChannels = new WaveOut[8];
-            this.swp = new SquareWaveProvider32[8];
+            this.waveOutChannels = new WasapiOut[8];
+            this.swp = new WaveGenerator[8];
             for (int i = 0; i < 8; i++)
             {
-                swp[i] = new SquareWaveProvider32();
+                swp[i] = new WaveGenerator(WaveType.Square);
                 this.swp[i].SetWaveFormat(44100, 1);
                 this.swp[i].Frequency = 400;
                 this.swp[i].Amplitude = 0.2f;
@@ -89,7 +90,7 @@
         private void PlayPSGNote(MIDIMessage message)
         {
             StopPSGNote(message);
-            this.waveOutChannels[message.Channel] = new NAudio.Wave.WaveOut();
+            this.waveOutChannels[message.Channel] = new WasapiOut(AudioClientShareMode.Shared, 5);
             this.waveOutChannels[message.Channel].Init(swp[message.Channel]);
             this.waveOutChannels[message.Channel].Play();
         }

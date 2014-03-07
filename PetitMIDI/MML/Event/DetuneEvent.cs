@@ -1,20 +1,13 @@
 ﻿namespace PetitMIDI.MML.Event
 {
-    /// <summary>
-    /// TODO: Update summary.
-    /// </summary>
-    public class DetuneEvent : MMLEvent
-    {
-        public DetuneEvent(int detune)
-            : base(EventTag.Detune)
-        {
-            this.Detune = detune;
-        }
+	public class DetuneEvent : MMLEvent
+	{
+		public int Detune;
 
-        public int Detune
-        {
-            get;
-            set;
-        }
-    }
+		public DetuneEvent(int detune)
+			: base(EventTag.Detune)
+		{
+			Detune = detune;
+		}
+	}
 }
