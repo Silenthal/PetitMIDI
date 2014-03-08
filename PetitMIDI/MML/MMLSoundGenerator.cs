@@ -51,21 +51,38 @@
             this.midiOut.Close();
             for (int i = 0; i < 8; i++)
             {
-                this.mixer.SetEnabledStatus(i, false);
+                this.mixer.Gate(i, false);
             }
             this.waveOut.Stop();
         }
 
         public void PlaySound(MIDIMessage message, NoteStyle noteType)
         {
-            if (message.Status == MessageType.NoteOn && noteType == NoteStyle.PSG)
+            if (noteType == NoteStyle.PSG)
             {
-                this.mixer.SetFrequency(message.Channel, this.frequencyTable[message.Data1]);
-                PlayPSGNote(message);
-            }
-            else if (message.Status == MessageType.NoteOff && noteType == NoteStyle.PSG)
-            {
-                StopPSGNote(message);
+                switch (message.Status)
+                {
+                    case MessageType.NoteOn:
+                        {
+                            this.mixer.SetFrequency(message.Channel, this.frequencyTable[message.Data1]);
+                            PlayPSGNote(message);
+                        }
+                        break;
+                    case MessageType.NoteOff:
+                        {
+                            StopPSGNote(message);
+                        }
+                        break;
+                    case MessageType.ControlChange:
+                        {
+                            if (message.ControlType == ControlChangeType.ChannelVolume)
+                            {
+                                float adjustedAmplitude = message.ControlValue / 127.0f * 0.8f;
+                                mixer.SetAmplitude(message.Channel, adjustedAmplitude);
+                            }
+                        }
+                        break;
+                }
             }
             else
             {
@@ -80,12 +97,12 @@
 
         private void PlayPSGNote(MIDIMessage message)
         {
-            this.mixer.SetEnabledStatus(message.Channel, true);
+            this.mixer.Gate(message.Channel, true);
         }
 
         private void StopPSGNote(MIDIMessage message)
         {
-            this.mixer.SetEnabledStatus(message.Channel, false);
+            this.mixer.Gate(message.Channel, false);
         }
 
         public void ChangeDuty(int channel, float newDuty)

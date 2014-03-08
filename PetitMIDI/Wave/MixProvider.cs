@@ -2,7 +2,7 @@
 
 namespace PetitMIDI.Wave
 {
-	internal class MixProvider : WaveProvider32
+	public class MixProvider : WaveProvider32
 	{
 		private WaveGenerator[] genArr = new WaveGenerator[8];
 
@@ -91,20 +91,11 @@ namespace PetitMIDI.Wave
 			}
 		}
 
-		public bool IsEnabled(int channel)
+		public void Gate(int channel, bool gateVal)
 		{
 			if (channel >= 0 && channel < genArr.Length)
 			{
-				return genArr[channel].IsEnabled;
-			}
-			else return false;
-		}
-
-		public void SetEnabledStatus(int channel, bool ampVal)
-		{
-			if (channel >= 0 && channel < genArr.Length)
-			{
-				genArr[channel].IsEnabled = ampVal;
+				genArr[channel].Gate(gateVal);
 			}
 		}
 
@@ -116,10 +107,7 @@ namespace PetitMIDI.Wave
 			}
 			for (int n = 0; n < genArr.Length; n++)
 			{
-				if (genArr[n].IsEnabled)
-				{
-					genArr[n].Read(buffer, offset, sampleCount, MixType.Mix);
-				}
+				genArr[n].Read(buffer, offset, sampleCount, MixType.Mix);
 			}
 			return sampleCount;
 		}

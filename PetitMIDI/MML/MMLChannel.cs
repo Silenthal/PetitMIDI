@@ -374,7 +374,6 @@
                     message.Data1 = 0x51;
                 }
             }
-
             SendEvent(message, forcePSG ? NoteStyle.PSG : this.noteStyle);
         }
 
@@ -535,6 +534,72 @@
             {
                 this.octave = 1;
             }
+        }
+
+        /// <summary>
+        /// Enables an amplitude ADSR envelope.
+        /// </summary>
+        /// <param name="attack">The attack time (time to go from 0 to max).</param>
+        /// <param name="decay">The decay (time to go from max to sustain level).</param>
+        /// <param name="sustain">The sustain level.</param>
+        /// <param name="release">The release time (time to go from sustain to 0).</param>
+        private void EnableEnvelope(int attack, int decay, int sustain, int release)
+        {
+            // TODO: Not sure how to handle sustain level just yet.
+            MIDIMessage message = new MIDIMessage();
+            message.Channel = channelID;
+            message.Status = MessageType.ControlChange;
+            message.ControlType = ControlChangeType.SoundController04; // Attack
+            message.ControlValue = attack < 0 ? 0 : (attack > 127 ? 127 : attack);
+            SendEvent(message, this.noteStyle);
+            message.ControlType = ControlChangeType.SoundController06; // Decay
+            message.ControlValue = decay < 0 ? 0 : (decay > 127 ? 127 : decay);
+            SendEvent(message, this.noteStyle);
+            message.ControlType = ControlChangeType.SoundController04; // Release
+            message.ControlValue = release < 0 ? 0 : (release > 127 ? 127 : release);
+            SendEvent(message, this.noteStyle);
+        }
+
+        /// <summary>
+        /// Disables an active amplitude ADSR envelope.
+        /// </summary>
+        private void DisableEnvelope()
+        {
+            // TODO: Not sure how to handle sustain level just yet.
+            EnableEnvelope(64, 64, 64, 64);
+        }
+
+        /// <summary>
+        /// Enables a vibrato effect (pitch fluctuation).
+        /// </summary>
+        /// <param name="depth">The depth of the vibrato.</param>
+        /// <param name="range">The effective range over which the vibrato varies.</param>
+        /// <param name="speed">The speed of the variance in the vibrato.</param>
+        /// <param name="delay">The delay of the start of the vibrato.</param>
+        private void EnableVibrato(int depth, int range, int speed, int delay)
+        {
+            // TODO: Not sure how to handle sustain level just yet.
+            MIDIMessage message = new MIDIMessage();
+            message.Channel = channelID;
+            message.Status = MessageType.ControlChange;
+            message.ControlType = ControlChangeType.SoundController08; // Vibrato Depth
+            message.ControlValue = depth & 0xFF;
+            SendEvent(message, this.noteStyle);
+            message.ControlType = ControlChangeType.SoundController07; // Vibrato Rate
+            message.ControlValue = range & 0xFF;
+            SendEvent(message, this.noteStyle);
+            message.ControlType = ControlChangeType.SoundController09; // Vibrato Delay
+            message.ControlValue = delay & 0xFF;
+            SendEvent(message, this.noteStyle);
+        }
+
+        /// <summary>
+        /// Disables an active vibrato effect (pitch fluctuation).
+        /// </summary>
+        private void DisableVibrato()
+        {
+            // TODO: Not sure how to handle sustain level just yet.
+            EnableVibrato(128, 128, 128, 128);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace PetitMIDI.Wave
 		/// </summary>
 		public float Duty { get; set; }
 
-		public bool IsEnabled = false;
+		private bool isGateActive = false;
 
 		public WaveType GeneratorType;
 
@@ -59,6 +59,11 @@ namespace PetitMIDI.Wave
 		{
 			GeneratorType = generatorType;
 			Amplitude = 0.25f;
+		}
+
+		public void Gate(bool isActive)
+		{
+			isGateActive = isActive;
 		}
 
 		/// <summary>
@@ -83,33 +88,48 @@ namespace PetitMIDI.Wave
 		/// <returns>The number of samples written to the buffer.</returns>
 		public int Read(float[] buffer, int offset, int sampleCount, MixType mixType)
 		{
-			if (!IsEnabled)
-			{
-				for (int i = 0; i < sampleCount; i++)
-				{
-					buffer[i + offset] = 0;
-				}
-				return sampleCount;
-			}
 			int sampleRate = WaveFormat.SampleRate;
 			float cycleTime = sampleRate / Frequency;
 			float ratio = cycleTime * this.Duty;
+			float currentSample = 0;
 			for (int n = 0; n < sampleCount; n++)
 			{
 				switch (GeneratorType)
 				{
 					case WaveType.Square:
-						buffer[n + offset] = (mixType == MixType.Overwrite ? 0 : buffer[n + offset]) + (float)(Amplitude * Math.Sign(ratio - sample));
+						currentSample = (float)(Amplitude * Math.Sign(ratio - sample));
 						break;
 
 					case WaveType.WhiteNoise:
-						buffer[n + offset] = (mixType == MixType.Overwrite ? 0 : buffer[n + offset]) + (float)(2 * r.NextDouble() - 1);
+						currentSample = (float)(2 * r.NextDouble() - 1);
 						break;
 
 					case WaveType.Sine:
 					default:
-						buffer[n + offset] = (mixType == MixType.Overwrite ? 0 : buffer[n + offset]) + (float)(Amplitude * Math.Sin(2 * Math.PI * (sample / cycleTime)));
+						currentSample = (float)(Amplitude * Math.Sin(2 * Math.PI * (sample / cycleTime)));
 						break;
+				}
+				if (mixType == MixType.Overwrite)
+				{
+					if (isGateActive)
+					{
+						buffer[n + offset] = currentSample;
+					}
+					else
+					{
+						buffer[n + offset] = 0;
+					}
+				}
+				else
+				{
+					if (isGateActive)
+					{
+						buffer[n + offset] = buffer[n + offset] + currentSample;
+					}
+					else
+					{
+						// Do nothing.
+					}
 				}
 				sample++;
 				if (sample > cycleTime)

@@ -227,6 +227,10 @@
 		/// </summary>
 		public ControlChangeType ControlType
 		{
+			get
+			{
+				return (ControlChangeType)this.data1;
+			}
 			set
 			{
 				this.data1 = (byte)value;
