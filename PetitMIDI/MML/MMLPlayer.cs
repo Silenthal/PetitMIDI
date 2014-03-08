@@ -100,7 +100,7 @@
             this.StopAllNotes();
 
             this.ResetChannels();
-            string[] channelMML = MMLStack.PreProcessMML(mml).Split(':');
+            string[] channelMML = MMLStack.PreProcessMML(":0" + mml).Split(':');
             if (channelMML.Length == 1)
             {
                 this.LoadChannelMML(0, channelMML[0]);
