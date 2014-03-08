@@ -15,8 +15,8 @@
                 get;
                 set;
             }
-            private static double psgStartDelayTime = .1d;
-            private static double psgEndDelayTime = .1d;
+            private static double psgStartDelayTime = 0;
+            private static double psgEndDelayTime = 0;
             private double noteOn;
             private double noteOff;
             public double noteOnTime

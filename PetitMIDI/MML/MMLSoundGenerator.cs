@@ -17,56 +17,50 @@
     /// </summary>
     public class MMLSoundGenerator
     {
-        private MidiOut midiOut;
+        private MidiOut midiOut = new MidiOut(0);
 
-        private WaveGenerator[] swp;
+        private WasapiOut waveOut = new WasapiOut(AudioClientShareMode.Shared, 3);
 
-        private WasapiOut[] waveOutChannels;
+        private MixProvider mixer = new MixProvider();
 
         public MMLSoundGenerator()
         {
-            this.midiOut = new NAudio.Midi.MidiOut(0);
-            this.waveOutChannels = new WasapiOut[8];
-            this.swp = new WaveGenerator[8];
+            this.mixer.SetWaveFormat(44100, 1);
             for (int i = 0; i < 8; i++)
             {
-                swp[i] = new WaveGenerator(WaveType.Square);
-                this.swp[i].SetWaveFormat(44100, 1);
-                this.swp[i].Frequency = 400;
-                this.swp[i].Amplitude = 0.2f;
-                this.waveOutChannels[i] = new WasapiOut(AudioClientShareMode.Shared, 5);
-                this.waveOutChannels[i].Init(swp[i]);
+                this.mixer.SetAmplitude(i, 0.2f);
+                this.mixer.SetFrequency(i, 400);
             }
-        }
-
-        public MMLSoundGenerator(int devID)
-        {
-            this.midiOut = new NAudio.Midi.MidiOut(devID);
+            Open(0);
         }
 
         public void Open(int deviceID = 0)
         {
-            if (this.midiOut != null)
-            {
-                this.midiOut.Close();
-            }
+            Close();
             this.midiOut = new MidiOut(deviceID);
+            this.waveOut = new WasapiOut(AudioClientShareMode.Shared, 5);
+            this.waveOut.Init(this.mixer);
+            this.waveOut.Play();
         }
 
         public void Close()
         {
+            MIDIMessage ms = new MIDIMessage();
+            ms.ControlType = ControlChangeType.AllNotesOff;
+            this.midiOut.Send(ms.RawData);
             this.midiOut.Close();
             for (int i = 0; i < 8; i++)
             {
-                this.waveOutChannels[i].Stop();
+                this.mixer.SetEnabledStatus(i, false);
             }
+            this.waveOut.Stop();
         }
 
         public void PlaySound(MIDIMessage message, NoteStyle noteType)
         {
             if (message.Status == MessageType.NoteOn && noteType == NoteStyle.PSG)
             {
-                this.swp[message.Channel].Frequency = this.frequencyTable[message.Data1];
+                this.mixer.SetFrequency(message.Channel, this.frequencyTable[message.Data1]);
                 PlayPSGNote(message);
             }
             else if (message.Status == MessageType.NoteOff && noteType == NoteStyle.PSG)
@@ -86,25 +80,27 @@
 
         private void PlayPSGNote(MIDIMessage message)
         {
-            StopPSGNote(message);
-            this.waveOutChannels[message.Channel].Play();
+            this.mixer.SetEnabledStatus(message.Channel, true);
         }
 
         private void StopPSGNote(MIDIMessage message)
         {
-            this.waveOutChannels[message.Channel].Stop();
+            this.mixer.SetEnabledStatus(message.Channel, false);
         }
 
         public void ChangeDuty(int channel, float newDuty)
         {
-            this.swp[channel].Duty = newDuty;
-            if (this.swp[channel].Duty >= 1)
+            if (newDuty >= 1)
             {
-                this.swp[channel].Duty = .875f;
+                this.mixer.SetDuty(channel, .875f);
             }
-            else if (this.swp[channel].Duty < 0)
+            else if (newDuty <= 0)
             {
-                this.swp[channel].Duty = .125f;
+                this.mixer.SetDuty(channel, .125f);
+            }
+            else
+            {
+                this.mixer.SetDuty(channel, newDuty);
             }
         }
         
