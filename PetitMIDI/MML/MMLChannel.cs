@@ -71,17 +71,12 @@
         private int instrument;
 
         /// <summary>
-        /// Contains the volume of this channel.
-        /// </summary>
-        private int volume;
-
-        /// <summary>
-        /// Represents the global default velocity of any notes played.
+        /// Represents the default velocity of any notes played.
         /// </summary>
         private int velocity;
 
         /// <summary>
-        /// Represents the global default octave of any notes played.
+        /// Represents the default octave of any notes played.
         /// </summary>
         private int octave;
 
@@ -157,7 +152,6 @@
         public void ResetChannelDefaults()
         {
             this.velocity = 127;
-            this.volume = 127;
             this.octave = 5;
             this.noteTimeValue = 4;
             this.nextUpdateTime = 0;
@@ -173,7 +167,7 @@
         {
             this.mStack.Clear();
             this.ChangeInstrument(0);
-            this.ChangeVolume(this.volume);
+            this.ChangeVolume(127);
         }
 
         /// <summary>
@@ -184,7 +178,7 @@
         {
             mStack.PushBack(mml);
             this.ChangeInstrument(0);
-            this.ChangeVolume(this.volume);
+            this.ChangeVolume(127);
         }
 
         /// <summary>
@@ -428,11 +422,19 @@
         /// <param name="newVolume">The volume to adjust the channel to.</param>
         private void ChangeVolume(int newVolume)
         {
+            if (newVolume < 0)
+            {
+                newVolume = 0;
+            }
+            if (newVolume > 127)
+            {
+                newVolume = 127;
+            }
             MIDIMessage mst = new MIDIMessage();
             mst.Channel = channelID;
             mst.Status = MessageType.ControlChange;
             mst.ControlType = ControlChangeType.ChannelVolume;
-            mst.ControlValue = volume;
+            mst.ControlValue = newVolume;
             SendEvent(mst, this.noteStyle);
         }
 
@@ -473,6 +475,11 @@
             {
                 noteStyle = NoteStyle.PSG;
                 ChangeDuty(this.channelID, .125f * (this.instrument - 143));
+            }
+            else if (this.instrument == 151)
+            {
+                noteStyle = NoteStyle.PSG;
+                ChangeDuty(this.channelID, -1);
             }
             else
             {

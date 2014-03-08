@@ -26,11 +26,6 @@
         public MMLSoundGenerator()
         {
             this.mixer.SetWaveFormat(44100, 1);
-            for (int i = 0; i < 8; i++)
-            {
-                this.mixer.SetAmplitude(i, 0.2f);
-                this.mixer.SetFrequency(i, 400);
-            }
             Open(0);
         }
 
@@ -65,6 +60,7 @@
                     case MessageType.NoteOn:
                         {
                             this.mixer.SetFrequency(message.Channel, this.frequencyTable[message.Data1]);
+                            this.mixer.SetVelocity(message.Channel, message.Data2 / 127.0f);
                             PlayPSGNote(message);
                         }
                         break;
@@ -77,7 +73,7 @@
                         {
                             if (message.ControlType == ControlChangeType.ChannelVolume)
                             {
-                                float adjustedAmplitude = message.ControlValue / 127.0f * 0.8f;
+                                float adjustedAmplitude = message.ControlValue / 127.0f;
                                 mixer.SetAmplitude(message.Channel, adjustedAmplitude);
                             }
                         }
@@ -107,17 +103,15 @@
 
         public void ChangeDuty(int channel, float newDuty)
         {
-            if (newDuty >= 1)
+            if (newDuty < 0)
             {
                 this.mixer.SetDuty(channel, .875f);
-            }
-            else if (newDuty <= 0)
-            {
-                this.mixer.SetDuty(channel, .125f);
+                this.mixer.SetGeneratorType(channel, WaveType.WhiteNoise);
             }
             else
             {
                 this.mixer.SetDuty(channel, newDuty);
+                this.mixer.SetGeneratorType(channel, WaveType.Square);
             }
         }
         

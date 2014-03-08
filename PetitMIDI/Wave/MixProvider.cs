@@ -40,6 +40,23 @@ namespace PetitMIDI.Wave
 			}
 		}
 
+		public float GetVelocity(int channel)
+		{
+			if (channel >= 0 && channel < genArr.Length)
+			{
+				return genArr[channel].Velocity;
+			}
+			else return 0;
+		}
+
+		public void SetVelocity(int channel, float velVal)
+		{
+			if (channel >= 0 && channel < genArr.Length)
+			{
+				genArr[channel].Velocity = velVal;
+			}
+		}
+
 		public float GetDuty(int channel)
 		{
 			if (channel >= 0 && channel < genArr.Length)

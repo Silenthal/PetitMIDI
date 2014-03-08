@@ -22,7 +22,8 @@ namespace PetitMIDI.Wave
 	public class WaveGenerator : WaveProvider32
 	{
 		private int sample = 0;
-		private float frequency = 440;
+		private float frequency = 440f;
+		private float ampScale = 0.08f;
 		private Random r = new Random();
 
 		/// <summary>
@@ -42,23 +43,27 @@ namespace PetitMIDI.Wave
 		}
 
 		/// <summary>
-		/// The amplitude of the wave.
+		/// Represents the amplitude of the wave.
 		/// </summary>
-		public float Amplitude { get; set; }
+		public float Amplitude = 1f;
+
+		/// <summary>
+		/// Represents the velocity that the wave hits with.
+		/// </summary>
+		public float Velocity = 1f;
 
 		/// <summary>
 		/// Gets or sets the duty cycle of the generated square wave.
 		/// </summary>
-		public float Duty { get; set; }
+		public float Duty = 0.125f;
 
 		private bool isGateActive = false;
 
-		public WaveType GeneratorType;
+		public WaveType GeneratorType = WaveType.Sine;
 
 		public WaveGenerator(WaveType generatorType = WaveType.Sine)
 		{
 			GeneratorType = generatorType;
-			Amplitude = 0.25f;
 		}
 
 		public void Gate(bool isActive)
@@ -88,6 +93,7 @@ namespace PetitMIDI.Wave
 		/// <returns>The number of samples written to the buffer.</returns>
 		public int Read(float[] buffer, int offset, int sampleCount, MixType mixType)
 		{
+			float appliedAmplitude = Amplitude * Velocity * ampScale;
 			int sampleRate = WaveFormat.SampleRate;
 			float cycleTime = sampleRate / Frequency;
 			float ratio = cycleTime * this.Duty;
@@ -97,16 +103,16 @@ namespace PetitMIDI.Wave
 				switch (GeneratorType)
 				{
 					case WaveType.Square:
-						currentSample = (float)(Amplitude * Math.Sign(ratio - sample));
+						currentSample = appliedAmplitude * (float)(Math.Sign(ratio - sample));
 						break;
 
 					case WaveType.WhiteNoise:
-						currentSample = (float)(2 * r.NextDouble() - 1);
+						currentSample = appliedAmplitude * (float)(2 * r.NextDouble() - 1);
 						break;
 
 					case WaveType.Sine:
 					default:
-						currentSample = (float)(Amplitude * Math.Sin(2 * Math.PI * (sample / cycleTime)));
+						currentSample = appliedAmplitude * (float)(Math.Sin(2 * Math.PI * (sample / cycleTime)));
 						break;
 				}
 				if (mixType == MixType.Overwrite)
@@ -124,7 +130,7 @@ namespace PetitMIDI.Wave
 				{
 					if (isGateActive)
 					{
-						buffer[n + offset] = buffer[n + offset] + currentSample;
+						buffer[n + offset] += currentSample;
 					}
 					else
 					{

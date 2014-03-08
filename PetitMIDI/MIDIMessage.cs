@@ -244,12 +244,12 @@
 		{
 			get
 			{
-				return this.data2 & 0x7F;
+				return this.Data2;
 			}
 
 			set
 			{
-				this.data2 = (byte)(value & 0x7F);
+				this.Data2 = value;
 			}
 		}
 	}
