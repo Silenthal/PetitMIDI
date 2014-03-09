@@ -42,14 +42,14 @@
             this.midiOut = new MMLSoundGenerator();
             this.channels = new MMLChannel[8]
             {
-                new MMLChannel(0, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.PlaySound),
-                new MMLChannel(1, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.PlaySound),
-                new MMLChannel(2, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.PlaySound),
-                new MMLChannel(3, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.PlaySound),
-                new MMLChannel(4, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.PlaySound),
-                new MMLChannel(5, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.PlaySound),
-                new MMLChannel(6, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.PlaySound),
-                new MMLChannel(7, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.PlaySound),
+                new MMLChannel(0, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.midiOut.Send, this.midiOut.ChangeMode),
+                new MMLChannel(1, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.midiOut.Send, this.midiOut.ChangeMode),
+                new MMLChannel(2, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.midiOut.Send, this.midiOut.ChangeMode),
+                new MMLChannel(3, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.midiOut.Send, this.midiOut.ChangeMode),
+                new MMLChannel(4, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.midiOut.Send, this.midiOut.ChangeMode),
+                new MMLChannel(5, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.midiOut.Send, this.midiOut.ChangeMode),
+                new MMLChannel(6, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.midiOut.Send, this.midiOut.ChangeMode),
+                new MMLChannel(7, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.midiOut.Send, this.midiOut.ChangeMode),
             };
             this.ResetChannels();
         }
@@ -156,16 +156,6 @@
         }
 
         /// <summary>
-        /// Plays a sound, usigng a MIDI message.
-        /// </summary>
-        /// <param name="message">The MIDI message to send.</param>
-        /// <param name="noteStyle">The type of note to play.</param>
-        private void PlaySound(MIDIMessage message, NoteStyle noteStyle)
-        {
-            this.midiOut.PlaySound(message, noteStyle);
-        }
-
-        /// <summary>
         /// Gets the time that a note takes, based on the note value.
         /// </summary>
         /// <param name="noteValue">The value of the note being played.</param>
@@ -202,7 +192,7 @@
             MIDIMessage mst = new MIDIMessage();
             mst.Status = MessageType.ControlChange;
             mst.ControlType = ControlChangeType.AllNotesOff;
-            this.PlaySound(mst, NoteStyle.Regular);
+            this.midiOut.Send(mst);
         }
     }
 }

@@ -1,56 +1,18 @@
 ﻿namespace PetitMIDI.MML
 {
     using PetitMIDI.MML.Event;
+    using PetitMIDI.Wave;
 
     /// <summary>
     /// Represents a music channel.
     /// </summary>
     public class MMLChannel
     {
-        private struct PSGNoteMessage
-        {
-            public enum MessageState{Stopped, Initiated, Playing}
-            public MessageState State
-            {
-                get;
-                set;
-            }
-            private static double psgStartDelayTime = 0;
-            private static double psgEndDelayTime = 0;
-            private double noteOn;
-            private double noteOff;
-            public double noteOnTime
-            {
-                get
-                {
-                    return noteOn + psgStartDelayTime;
-                }
-                set
-                {
-                    noteOn = value;
-                }
-            }
-            public double noteOffTime
-            {
-                get
-                {
-                    return noteOff + psgEndDelayTime;
-                }
-                set
-                {
-                    noteOff = value;
-                }
-            }
-            public int noteValue;
-        }
-
-        private PSGNoteMessage currentPSGNote;
-
         /// <summary>
         /// Sends a message to go to the main thread.
         /// </summary>
         /// <param name="message">The MIDI message.</param>
-        public delegate void SendEventDelegate(MIDIMessage message, NoteStyle noteStyle);
+        public delegate void SendEventDelegate(MIDIMessage message);
 
         public delegate double GetTimeDelegate();
 
@@ -59,6 +21,8 @@
         public delegate double GetNoteTimeDelegate(double noteValue);
 
         public delegate void ChangeDutyDelegate(int channel, float newDuty);
+
+        public delegate void ChangeNoteStyleDelegate(int channel, NoteStyle noteType);
 
         /// <summary>
         /// The ID of the current channel.
@@ -113,13 +77,16 @@
 
         private ChangeDutyDelegate ChangeDuty;
 
+        private ChangeNoteStyleDelegate ChangeNoteStyle;
+
         private MMLStack mStack;
 
         public MMLChannel(int channel,
             GetNoteTimeDelegate noteTimeFunction,
             ChangeTempoDelegate tempoFunction,
             ChangeDutyDelegate dutyFunction,
-            SendEventDelegate eventFunction)
+            SendEventDelegate eventFunction,
+            ChangeNoteStyleDelegate noteStyleFunction)
         {
             this.channelID = channel;
 
@@ -127,6 +94,7 @@
             this.ChangeTempo = tempoFunction;
             this.SendEvent = eventFunction;
             this.ChangeDuty = dutyFunction;
+            this.ChangeNoteStyle = noteStyleFunction;
 
             this.mStack = new MMLStack();
 
@@ -158,6 +126,7 @@
             this.lastNotePlayed = 0;
             this.noteStyle = NoteStyle.Regular;
             this.mStack.Refresh();
+            ChangeNoteStyle(this.channelID, this.noteStyle);
         }
 
         /// <summary>
@@ -187,18 +156,6 @@
         /// <param name="time">The current time.</param>
         public void Update(double time)
         {
-            if (currentPSGNote.State == PSGNoteMessage.MessageState.Initiated && time >= currentPSGNote.noteOnTime)
-            {
-                PlayNote(currentPSGNote.noteValue, true);
-                currentPSGNote.State = PSGNoteMessage.MessageState.Playing;
-            }
-
-            if (currentPSGNote.State == PSGNoteMessage.MessageState.Playing && time >= currentPSGNote.noteOffTime)
-            {
-                StopNote(currentPSGNote.noteValue, true);
-                currentPSGNote.State = PSGNoteMessage.MessageState.Stopped;
-            }
-
             if (time < this.nextUpdateTime)
             {
                 return;
@@ -320,18 +277,8 @@
                             noteTemp.NoteValue = this.noteTimeValue;
                         }
 
-                        if (this.noteStyle == NoteStyle.PSG)
-                        {
-                            currentPSGNote.noteOnTime = this.nextUpdateTime;
-                            currentPSGNote.noteOffTime = this.nextUpdateTime + this.GetNoteTime(noteTemp.ActualNoteValue);
-                            currentPSGNote.noteValue = noteTemp.BaseNote;
-                            currentPSGNote.State = PSGNoteMessage.MessageState.Initiated;
-                        }
-                        else
-                        {
-                            this.PlayNote(noteTemp.BaseNote);
-                            this.lastNotePlayed = noteTemp.BaseNote;
-                        }
+                        this.PlayNote(noteTemp.BaseNote);
+                        this.lastNotePlayed = noteTemp.BaseNote;
 
                         this.nextUpdateTime += this.GetNoteTime(noteTemp.ActualNoteValue);
                     }
@@ -368,7 +315,7 @@
                     message.Data1 = 0x51;
                 }
             }
-            SendEvent(message, forcePSG ? NoteStyle.PSG : this.noteStyle);
+            SendEvent(message);
         }
 
         /// <summary>
@@ -396,7 +343,7 @@
                 }
             }
 
-            SendEvent(message, this.noteStyle);
+            SendEvent(message);
         }
 
         /// <summary>
@@ -435,7 +382,7 @@
             mst.Status = MessageType.ControlChange;
             mst.ControlType = ControlChangeType.ChannelVolume;
             mst.ControlValue = newVolume;
-            SendEvent(mst, this.noteStyle);
+            SendEvent(mst);
         }
 
         /// <summary>
@@ -464,25 +411,29 @@
             this.instrument = newInstrument;
             if (this.instrument < 128)
             {
+                ChangeNoteStyle(this.channelID, NoteStyle.Regular);
                 noteStyle = NoteStyle.Regular;
                 MIDIMessage mst = new MIDIMessage();
                 mst.Channel = channelID;
                 mst.Status = MessageType.ProgramChange;
                 mst.Data1 = this.instrument;
-                SendEvent(mst, this.noteStyle);
+                SendEvent(mst);
             }
             else if (this.instrument > 143 & this.instrument < 151)
             {
+                ChangeNoteStyle(this.channelID, NoteStyle.PSG);
                 noteStyle = NoteStyle.PSG;
                 ChangeDuty(this.channelID, .125f * (this.instrument - 143));
             }
             else if (this.instrument == 151)
             {
+                ChangeNoteStyle(this.channelID, NoteStyle.Noise);
                 noteStyle = NoteStyle.PSG;
                 ChangeDuty(this.channelID, -1);
             }
             else
             {
+                ChangeNoteStyle(this.channelID, NoteStyle.Drums);
                 noteStyle = NoteStyle.Drums;
             }
             
@@ -499,7 +450,7 @@
             mst.Channel = channelID;
             mst.ControlType = ControlChangeType.Pan;
             mst.ControlValue = pan;
-            SendEvent(mst, this.noteStyle);
+            SendEvent(mst);
         }
 
         /// <summary>
@@ -558,13 +509,13 @@
             message.Status = MessageType.ControlChange;
             message.ControlType = ControlChangeType.SoundController04; // Attack
             message.ControlValue = attack < 0 ? 0 : (attack > 127 ? 127 : attack);
-            SendEvent(message, this.noteStyle);
+            SendEvent(message);
             message.ControlType = ControlChangeType.SoundController06; // Decay
             message.ControlValue = decay < 0 ? 0 : (decay > 127 ? 127 : decay);
-            SendEvent(message, this.noteStyle);
+            SendEvent(message);
             message.ControlType = ControlChangeType.SoundController04; // Release
             message.ControlValue = release < 0 ? 0 : (release > 127 ? 127 : release);
-            SendEvent(message, this.noteStyle);
+            SendEvent(message);
         }
 
         /// <summary>
@@ -591,13 +542,13 @@
             message.Status = MessageType.ControlChange;
             message.ControlType = ControlChangeType.SoundController08; // Vibrato Depth
             message.ControlValue = depth & 0xFF;
-            SendEvent(message, this.noteStyle);
+            SendEvent(message);
             message.ControlType = ControlChangeType.SoundController07; // Vibrato Rate
             message.ControlValue = range & 0xFF;
-            SendEvent(message, this.noteStyle);
+            SendEvent(message);
             message.ControlType = ControlChangeType.SoundController09; // Vibrato Delay
             message.ControlValue = delay & 0xFF;
-            SendEvent(message, this.noteStyle);
+            SendEvent(message);
         }
 
         /// <summary>
