@@ -39,15 +39,17 @@ namespace PetitMIDI.MML
 		private float attackBase;
 		private float decayBase;
 		private float releaseBase;
-		private int cyclesActive = 0;
-		private int activeAtGate = 0;
-		private int activeAtRelease = 0;
 		public ADSREnvelope(int sampleRate)
 		{
 			Reset();
-			SetAttack(0.5f, sampleRate);
-			SetDecay(0.5f, sampleRate);
-			SetRelease(0.5f, sampleRate);
+			SetDefaults(sampleRate);
+		}
+
+		public void SetDefaults(int sampleRate)
+		{
+			SetAttack(0, sampleRate);
+			SetDecay(0, sampleRate);
+			SetRelease(0, sampleRate);
 			SetSustain(1.0f);
 			SetTargetRatioA(0.3f);
 			SetTargetRatioDR(0.0001f);
@@ -59,16 +61,6 @@ namespace PetitMIDI.MML
 		/// <returns>The value on the ADSR curve to apply to the signal.</returns>
 		public float Process()
 		{
-			if (state == ADSRState.Attack)
-			{
-				cyclesActive++;
-				return 1f;
-			}
-			else
-			{
-				return 0f;
-			}
-			/*
 			switch (state)
 			{
 				case ADSRState.Idle:
@@ -105,7 +97,6 @@ namespace PetitMIDI.MML
 					break;
 			}
 			return Output;
-			*/
 		}
 
 		public ADSRState GetCurrentState()
@@ -118,12 +109,10 @@ namespace PetitMIDI.MML
 			if (isActive)
 			{
 				state = ADSRState.Attack;
-				activeAtGate = cyclesActive;
 			}
 			else if (state != ADSRState.Idle)
 			{
 				state = ADSRState.Release;
-				activeAtRelease = cyclesActive;
 			}
 		}
 

@@ -108,6 +108,14 @@ namespace PetitMIDI.Wave
 			}
 		}
 
+		public void SetEnvelope(int channel, int attack, int delay, int sustain, int release)
+		{
+			if (channel >= 0 && channel < genArr.Length)
+			{
+				genArr[channel].SetEnvelope(attack, delay, sustain, release);
+			}
+		}
+
 		public void Gate(int channel, bool gateVal)
 		{
 			if (channel >= 0 && channel < genArr.Length)

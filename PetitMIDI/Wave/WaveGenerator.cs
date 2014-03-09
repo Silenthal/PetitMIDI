@@ -1,5 +1,6 @@
 ﻿using NAudio.Wave;
 using System;
+using PetitMIDI.MML;
 
 namespace PetitMIDI.Wave
 {
@@ -25,6 +26,7 @@ namespace PetitMIDI.Wave
 		private float frequency = 440f;
 		private float ampScale = 0.08f;
 		private Random r = new Random();
+		private ADSREnvelope envelope;
 
 		/// <summary>
 		/// The frequency of the wave.
@@ -57,18 +59,35 @@ namespace PetitMIDI.Wave
 		/// </summary>
 		public float Duty = 0.125f;
 
-		private bool isGateActive = false;
-
 		public WaveType GeneratorType = WaveType.Sine;
 
 		public WaveGenerator(WaveType generatorType = WaveType.Sine)
 		{
 			GeneratorType = generatorType;
+			envelope = new ADSREnvelope(44100);
+		}
+
+		public new void SetWaveFormat(int sampleRate, int channels)
+		{
+			base.SetWaveFormat(sampleRate, channels);
+			envelope.SetDefaults(sampleRate);
+		}
+
+		public void SetEnvelope(int attack, int delay, int sustain, int release)
+		{
+			float fAtk = attack / 127.0f;
+			float fDly = delay / 127.0f;
+			float fSus = sustain / 127.0f;
+			float fRel = release / 127.0f;
+			envelope.SetAttack(fAtk, 44100);
+			envelope.SetDecay(fDly, 44100);
+			envelope.SetSustain(fSus);
+			envelope.SetRelease(fRel, 44100);
 		}
 
 		public void Gate(bool isActive)
 		{
-			isGateActive = isActive;
+			envelope.Gate(isActive);
 		}
 
 		/// <summary>
@@ -117,25 +136,11 @@ namespace PetitMIDI.Wave
 				}
 				if (mixType == MixType.Overwrite)
 				{
-					if (isGateActive)
-					{
-						buffer[n + offset] = currentSample;
-					}
-					else
-					{
-						buffer[n + offset] = 0;
-					}
+					buffer[n + offset] = currentSample * envelope.Process();
 				}
 				else
 				{
-					if (isGateActive)
-					{
-						buffer[n + offset] += currentSample;
-					}
-					else
-					{
-						// Do nothing.
-					}
+					buffer[n + offset] += currentSample * envelope.Process();
 				}
 				sample++;
 				if (sample > cycleTime)

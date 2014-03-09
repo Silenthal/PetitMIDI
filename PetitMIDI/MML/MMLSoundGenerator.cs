@@ -74,6 +74,30 @@
 			}
 		}
 
+		public void EnableEnvelope(int channel, int attack, int decay, int sustain, int release)
+		{
+			if (noteMode[channel] == NoteStyle.Regular || noteMode[channel] == NoteStyle.Drums)
+			{
+				// TODO: Not sure how to handle sustain level just yet.
+				MIDIMessage message = new MIDIMessage();
+				message.Channel = channel;
+				message.Status = MessageType.ControlChange;
+				message.ControlType = ControlChangeType.SoundController04; // Attack
+				message.ControlValue = attack;
+				this.midiOut.Send(message.RawData);
+				message.ControlType = ControlChangeType.SoundController06; // Decay
+				message.ControlValue = decay;
+				this.midiOut.Send(message.RawData);
+				message.ControlType = ControlChangeType.SoundController03; // Release
+				message.ControlValue = release;
+				this.midiOut.Send(message.RawData);
+			}
+			else
+			{
+				this.mixer.SetEnvelope(channel, attack, decay, sustain, release);
+			}
+		}
+
 		public void Send(MIDIMessage message)
 		{
 			if (noteMode[message.Channel] == NoteStyle.Regular || noteMode[message.Channel] == NoteStyle.Drums)
@@ -100,10 +124,16 @@
 
 					case MessageType.ControlChange:
 						{
-							if (message.ControlType == ControlChangeType.ChannelVolume)
+							switch (message.ControlType)
 							{
-								float adjustedAmplitude = message.ControlValue / 127.0f;
-								mixer.SetAmplitude(message.Channel, adjustedAmplitude);
+								case ControlChangeType.ChannelVolume:
+									{
+										float adjustedAmplitude = message.ControlValue / 127.0f;
+										mixer.SetAmplitude(message.Channel, adjustedAmplitude);
+									}
+									break;
+								default:
+									break;
 							}
 						}
 						break;
