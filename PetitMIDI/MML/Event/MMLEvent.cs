@@ -8,6 +8,7 @@
 		None,
 		Invalid,
 		Note,
+		Pitch,
 		Rest,
 		Length,
 		Tempo,

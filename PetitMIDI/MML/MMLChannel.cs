@@ -266,6 +266,19 @@
 					}
 					break;
 
+				case EventTag.EnvelopeRelease:
+					{
+						if (this.noteStyle == NoteStyle.Regular || this.noteStyle == NoteStyle.Drums)
+						{
+							this.ChangeEnvelope(channelID, 64, 64, 64, 64);
+						}
+						else
+						{
+							this.ChangeEnvelope(channelID, 0, 0, 127, 0);
+						}
+					}
+					break;
+
 				case EventTag.Rest:
 					{
 						RestEvent restTemp = command as RestEvent;
@@ -292,6 +305,16 @@
 						this.lastNotePlayed = noteTemp.BaseNote;
 
 						this.nextUpdateTime += this.GetNoteTime(noteTemp.ActualNoteValue);
+					}
+
+					break;
+
+				case EventTag.Pitch:
+					{
+						PitchEvent noteTemp = command as PitchEvent;
+						this.PlayNote(noteTemp.Pitch);
+						this.lastNotePlayed = noteTemp.Pitch;
+						this.nextUpdateTime += this.GetNoteTime(this.noteTimeValue);
 					}
 
 					break;

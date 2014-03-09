@@ -60,6 +60,7 @@
     <Compile Include="HighResTimer.cs" />
     <Compile Include="MIDIMessage.cs" />
     <Compile Include="MML\ADSREnvelope.cs" />
+    <Compile Include="MML\Event\PitchEvent.cs" />
     <Compile Include="MML\MMLSoundGenerator.cs" />
     <Compile Include="MML\Event\DetuneEvent.cs" />
     <Compile Include="MML\Event\EnvelopeEvent.cs" />
