@@ -10,6 +10,11 @@ can be adjusted for individual notes by including a number after the note.
 Notes can also be dotted by adding a period. For example, `C4.` represents  
 a C, as a 3/8 note.  
 
+`N`  
+This plus a number specifies the exact note played, where `N60` represents  
+middle C and each number up or down represents a single half step.  
+The length of this note is determined by the channel default, and can't be dotted.  
+
 `R`  
 This represents a rest, where no music is played. This rest can have its  
 length adjusted, and can be dotted like a regular note.  
@@ -37,7 +42,7 @@ for the specified channel. The instruments provided follow the General MIDI
 specification, with the exception that percussion is done by setting the instrument  
 number to 128/129, allowing any channel to act as a percussion channel. Instruments  
 144-150 can be used to play square waves at different duty cycles, starting at  
-12.5% duty on 144, up to 87.5% duty on 150.
+12.5% duty on 144, up to 87.5% duty on 150. Instrument 151 is a noise generator.
 
 ## Unsupported Features ##
 Aside from the limitations of the music player, this app doesn't support:  
@@ -45,5 +50,9 @@ Aside from the limitations of the music player, this app doesn't support:
 
 * User made waveforms (instrument 255-256 on Petit Computer)  
 * Tremolo, Vibrato  
-* ADSR envelopes  
+* ADSR envelopes (the current implementation is lacking)  
 * Gate Time (Q)  
+* Detune
+* Portamento
+* Note Tying
+* Panning for PSG channels

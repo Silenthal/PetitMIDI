@@ -456,6 +456,19 @@
 						}
 					}
 
+				case '&':
+					{
+						this.PopChar();
+						if (PeekChar() >= 'A' && PeekChar() <= 'G')
+						{
+							return new TieEvent();
+						}
+						else
+						{
+							return new InvalidEvent();
+						}
+					}
+
 				case 'R': // Rest
 					{
 						this.PopChar();
@@ -496,7 +509,7 @@
 				case 'N': // Note
 					{
 						this.PopChar();
-						string pc =  "";
+						string pc = "";
 						int conv = 0;
 						while (char.IsDigit(this.PeekChar()))
 						{

@@ -164,21 +164,25 @@
 			{
 				return;
 			}
-
-			if (this.isNoteBeingPlayed)
-			{
-				this.StopNote(this.lastNotePlayed);
-			}
-
 			if (this.mStack.IsEmpty)
 			{
+				this.StopNote(this.lastNotePlayed);
 				return;
 			}
-
+			bool tieTriggered = false;
 			MMLEvent command = mStack.PopEvent();
 			if (command.Tag == EventTag.None)
 			{
 				return;
+			}
+			else if (command.Tag == EventTag.Tie)
+			{
+				command = mStack.PopEvent();
+				tieTriggered = true;
+			}
+			else if (this.isNoteBeingPlayed)
+			{
+				this.StopNote(this.lastNotePlayed);
 			}
 			switch (command.Tag)
 			{
@@ -300,10 +304,11 @@
 						{
 							noteTemp.NoteValue = this.noteTimeValue;
 						}
-
-						this.PlayNote(noteTemp.BaseNote);
-						this.lastNotePlayed = noteTemp.BaseNote;
-
+						if (!tieTriggered)
+						{
+							this.PlayNote(noteTemp.BaseNote);
+							this.lastNotePlayed = noteTemp.BaseNote;
+						}
 						this.nextUpdateTime += this.GetNoteTime(noteTemp.ActualNoteValue);
 					}
 
