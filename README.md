@@ -8,7 +8,9 @@ MML used in this app can be copied for use in programs that run on
 These represent basic notes. The length of a note (quarter, eigth, etc.)  
 can be adjusted for individual notes by including a number after the note.  
 Notes can also be dotted by adding a period. For example, `C4.` represents  
-a C, as a 3/8 note.  
+a C, as a 3/8 note. Notes can be tied together by typing an `&` between successive  
+notes. Note that th behavior of the tie is based on note length - In Petit Computer,  
+the tie will change pitch if you tie together two notes of different pitches.  
 
 `N`  
 This plus a number specifies the exact note played, where `N60` represents  
@@ -54,5 +56,4 @@ Aside from the limitations of the music player, this app doesn't support:
 * Gate Time (Q)  
 * Detune
 * Portamento
-* Note Tying
 * Panning for PSG channels
