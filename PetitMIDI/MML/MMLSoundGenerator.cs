@@ -102,6 +102,10 @@
 		{
 			if (noteMode[message.Channel] == NoteStyle.Regular || noteMode[message.Channel] == NoteStyle.Drums)
 			{
+				if (noteMode[message.Channel] == NoteStyle.Drums)
+				{
+					message.Channel = 9;
+				}
 				this.midiOut.Send(message.RawData);
 			}
 			else

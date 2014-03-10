@@ -345,7 +345,6 @@
 			message.Channel = channelID;
 			if (this.noteStyle == NoteStyle.Drums)
 			{
-				message.Channel = 9;
 				if (message.Data1 < 0x23)
 				{
 					message.Data1 = 0x23;
