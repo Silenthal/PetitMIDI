@@ -1,5 +1,6 @@
 ﻿namespace PetitMIDI.MML
 {
+	using PetitMIDI.Audio;
 	using PetitMIDI.MML.Event;
 
 	/// <summary>
@@ -113,7 +114,7 @@
 		{
 			get
 			{
-				return this.mStack.IsEmpty && !this.isNoteBeingPlayed;
+				return this.mStack.IsEmpty;
 			}
 		}
 
@@ -366,9 +367,9 @@
 		{
 			this.isNoteBeingPlayed = false;
 			MIDIMessage message = new MIDIMessage();
-			message.Status = MessageType.NoteOff;
+			message.Status = MessageType.NoteOn;
 			message.Data1 = baseNote;
-			message.Data2 = this.velocity;
+			message.Data2 = 0;
 			message.Channel = channelID;
 			if (this.noteStyle == NoteStyle.Drums)
 			{

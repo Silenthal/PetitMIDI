@@ -1,31 +1,31 @@
 ﻿// Adapted from code from http://www.earlevel.com/main/2013/06/01/envelope-generators/
-namespace PetitMIDI.MML
+namespace PetitMIDI.Audio
 {
 	using System;
 
 	/// <summary>
-	/// Represents the current state of the envelope.
+	/// Represents a time-based envelope.
 	/// </summary>
-	public enum ADSRState
+	public class Envelope
 	{
-		Idle,
-		Attack,
-		Decay,
-		Sustain,
-		Release
-	}
+		/// <summary>
+		/// Represents the current state of the envelope.
+		/// </summary>
+		public enum State
+		{
+			Idle,
+			Attack,
+			Decay,
+			Sustain,
+			Release
+		}
 
-	/// <summary>
-	/// Represents an amplitude based ADSR envelope.
-	/// </summary>
-	public class ADSREnvelope
-	{
 		/// <summary>
 		/// Represents the last output of the envelope.
 		/// </summary>
 		public float Output { get; private set; }
 
-		private ADSRState state = ADSRState.Idle;
+		private State state = State.Idle;
 
 		private float attackRate;
 		private float decayRate;
@@ -39,7 +39,8 @@ namespace PetitMIDI.MML
 		private float attackBase;
 		private float decayBase;
 		private float releaseBase;
-		public ADSREnvelope(int sampleRate)
+
+		public Envelope(int sampleRate)
 		{
 			Reset();
 			SetDefaults(sampleRate);
@@ -63,43 +64,43 @@ namespace PetitMIDI.MML
 		{
 			switch (state)
 			{
-				case ADSRState.Idle:
+				case State.Idle:
 					break;
 
-				case ADSRState.Attack:
+				case State.Attack:
 					Output = attackBase + Output * attackCoef;
 					if (Output >= 1.0f)
 					{
 						Output = 1.0f;
-						state = ADSRState.Decay;
+						state = State.Decay;
 					}
 					break;
 
-				case ADSRState.Decay:
+				case State.Decay:
 					Output = decayBase + Output * decayCoef;
 					if (Output <= sustainLevel)
 					{
 						Output = sustainLevel;
-						state = ADSRState.Sustain;
+						state = State.Sustain;
 					}
 					break;
 
-				case ADSRState.Sustain:
+				case State.Sustain:
 					break;
 
-				case ADSRState.Release:
+				case State.Release:
 					Output = releaseBase + Output * releaseCoef;
 					if (Output <= 0.0f)
 					{
 						Output = 0.0f;
-						state = ADSRState.Idle;
+						state = State.Idle;
 					}
 					break;
 			}
 			return Output;
 		}
 
-		public ADSRState GetCurrentState()
+		public State GetCurrentState()
 		{
 			return state;
 		}
@@ -108,11 +109,11 @@ namespace PetitMIDI.MML
 		{
 			if (isActive)
 			{
-				state = ADSRState.Attack;
+				state = State.Attack;
 			}
-			else if (state != ADSRState.Idle)
+			else if (state != State.Idle)
 			{
-				state = ADSRState.Release;
+				state = State.Release;
 			}
 		}
 
@@ -172,7 +173,7 @@ namespace PetitMIDI.MML
 
 		public void Reset()
 		{
-			state = ADSRState.Idle;
+			state = State.Idle;
 			Output = 0.0f;
 		}
 

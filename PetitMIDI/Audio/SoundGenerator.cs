@@ -1,9 +1,8 @@
-﻿namespace PetitMIDI.MML
+﻿namespace PetitMIDI.Audio
 {
 	using NAudio.CoreAudioApi;
 	using NAudio.Midi;
 	using NAudio.Wave;
-	using PetitMIDI.Wave;
 
 	public enum NoteStyle
 	{
@@ -16,7 +15,7 @@
 	/// <summary>
 	/// Represents the sound creator for MML.
 	/// </summary>
-	public class MMLSoundGenerator
+	public class SoundGenerator
 	{
 		private MidiOut midiOut = new MidiOut(0);
 
@@ -26,7 +25,7 @@
 
 		private NoteStyle[] noteMode = new NoteStyle[8];
 
-		public MMLSoundGenerator()
+		public SoundGenerator()
 		{
 			this.mixer.SetWaveFormat(44100, 1);
 			Open(0);
@@ -136,6 +135,7 @@
 										mixer.SetAmplitude(message.Channel, adjustedAmplitude);
 									}
 									break;
+
 								default:
 									break;
 							}

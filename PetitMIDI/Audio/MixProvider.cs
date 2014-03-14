@@ -1,7 +1,7 @@
-﻿using NAudio.Wave;
-
-namespace PetitMIDI.Wave
+﻿namespace PetitMIDI.Audio
 {
+	using NAudio.Wave;
+
 	public class MixProvider : WaveProvider32
 	{
 		private WaveGenerator[] genArr = new WaveGenerator[8];

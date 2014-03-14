@@ -1,9 +1,9 @@
 ﻿namespace PetitMIDI.MML
 {
+	using PetitMIDI.MML.Event;
 	using System.Collections.Generic;
 	using System.Text;
 	using System.Text.RegularExpressions;
-	using PetitMIDI.MML.Event;
 
 	/// <summary>
 	/// A stack for MML evaluation.
@@ -410,7 +410,12 @@
 						this.PopChar();
 						if (char.IsDigit(this.PeekChar()))
 						{
-							return new TempoEvent(int.Parse(this.PopNumber()));
+							int outNum = int.Parse(this.PopNumber());
+							if (outNum < 1 || outNum > 512)
+							{
+								return new InvalidEvent();
+							}
+							return new TempoEvent(outNum);
 						}
 						else
 						{
@@ -456,7 +461,7 @@
 						}
 					}
 
-				case '&':
+				case '&': // Tie
 					{
 						this.PopChar();
 						if (PeekChar() >= 'A' && PeekChar() <= 'G')

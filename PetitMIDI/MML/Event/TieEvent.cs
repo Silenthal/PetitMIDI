@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace PetitMIDI.MML.Event
+﻿namespace PetitMIDI.MML.Event
 {
 	public class TieEvent : MMLEvent
 	{

@@ -1,5 +1,7 @@
 ﻿namespace PetitMIDI.MML
 {
+	using PetitMIDI.Audio;
+
 	/// <summary>
 	/// A class to play MML.
 	/// </summary>
@@ -10,7 +12,7 @@
 		/// <summary>
 		/// Handle to the current MIDI device.
 		/// </summary>
-		private MMLSoundGenerator midiOut;
+		private SoundGenerator midiOut;
 
 		/// <summary>
 		/// Timer for managing play time.
@@ -39,7 +41,7 @@
 		/// </summary>
 		public MMLPlayer()
 		{
-			this.midiOut = new MMLSoundGenerator();
+			this.midiOut = new SoundGenerator();
 			for (int i = 0; i < channels.Length; i++)
 			{
 				channels[i] = new MMLChannel(i, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.midiOut.Send, this.midiOut.ChangeMode, this.midiOut.EnableEnvelope);

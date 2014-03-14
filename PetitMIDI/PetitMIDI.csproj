@@ -57,12 +57,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Audio\Envelope.cs" />
+    <Compile Include="Audio\Sampler.cs" />
     <Compile Include="HighResTimer.cs" />
     <Compile Include="MIDIMessage.cs" />
-    <Compile Include="MML\ADSREnvelope.cs" />
     <Compile Include="MML\Event\PitchEvent.cs" />
     <Compile Include="MML\Event\TieEvent.cs" />
-    <Compile Include="MML\MMLSoundGenerator.cs" />
+    <Compile Include="Audio\SoundGenerator.cs" />
     <Compile Include="MML\Event\DetuneEvent.cs" />
     <Compile Include="MML\Event\EnvelopeEvent.cs" />
     <Compile Include="MML\Event\EnvelopeReleaseEvent.cs" />
@@ -88,8 +89,8 @@
     <Compile Include="MML\MMLChannel.cs" />
     <Compile Include="MML\MMLStack.cs" />
     <Compile Include="MML\MMLPlayer.cs" />
-    <Compile Include="Wave\MixProvider.cs" />
-    <Compile Include="Wave\WaveGenerator.cs" />
+    <Compile Include="Audio\MixProvider.cs" />
+    <Compile Include="Audio\WaveGenerator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

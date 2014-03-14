@@ -1,12 +1,10 @@
-﻿using NAudio.Wave;
-using System;
-using PetitMIDI.MML;
-
-namespace PetitMIDI.Wave
+﻿namespace PetitMIDI.Audio
 {
+	using NAudio.Wave;
+	using System;
+
 	public enum WaveType
 	{
-		Sine,
 		Square,
 		WhiteNoise
 	}
@@ -26,7 +24,7 @@ namespace PetitMIDI.Wave
 		private float frequency = 440f;
 		private float ampScale = 0.08f;
 		private Random r = new Random();
-		private ADSREnvelope envelope;
+		private Envelope envelope;
 
 		/// <summary>
 		/// The frequency of the wave.
@@ -59,12 +57,12 @@ namespace PetitMIDI.Wave
 		/// </summary>
 		public float Duty = 0.125f;
 
-		public WaveType GeneratorType = WaveType.Sine;
+		public WaveType GeneratorType = WaveType.Square;
 
-		public WaveGenerator(WaveType generatorType = WaveType.Sine)
+		public WaveGenerator(WaveType generatorType = WaveType.Square)
 		{
 			GeneratorType = generatorType;
-			envelope = new ADSREnvelope(44100);
+			envelope = new Envelope(44100);
 		}
 
 		public new void SetWaveFormat(int sampleRate, int channels)
@@ -122,16 +120,12 @@ namespace PetitMIDI.Wave
 				switch (GeneratorType)
 				{
 					case WaveType.Square:
+					default:
 						currentSample = appliedAmplitude * (float)(Math.Sign(ratio - sample));
 						break;
 
 					case WaveType.WhiteNoise:
 						currentSample = appliedAmplitude * (float)(2 * r.NextDouble() - 1);
-						break;
-
-					case WaveType.Sine:
-					default:
-						currentSample = appliedAmplitude * (float)(Math.Sin(2 * Math.PI * (sample / cycleTime)));
 						break;
 				}
 				if (mixType == MixType.Overwrite)
