@@ -58,7 +58,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Audio\Envelope.cs" />
-    <Compile Include="Audio\Sampler.cs" />
     <Compile Include="HighResTimer.cs" />
     <Compile Include="MIDIMessage.cs" />
     <Compile Include="MML\Event\PitchEvent.cs" />

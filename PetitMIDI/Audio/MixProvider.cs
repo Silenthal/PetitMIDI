@@ -97,7 +97,7 @@
 			{
 				return genArr[channel].GeneratorType;
 			}
-			else return WaveType.Sine;
+			else return WaveType.Square;
 		}
 
 		public void SetGeneratorType(int channel, WaveType waveVal)

@@ -448,6 +448,11 @@
 		/// <param name="newInstrument">The instrument to change to.</param>
 		private void ChangeInstrument(int newInstrument)
 		{
+			// Note: These instrument ranges map to the same thing:
+			// 144-151 (7 square waves plus one noise)
+			// 152-159
+			// 160-167
+			// 168-175
 			this.instrument = newInstrument;
 			if (this.instrument < 128)
 			{
@@ -459,17 +464,23 @@
 				mst.Data1 = this.instrument;
 				SendEvent(mst);
 			}
-			else if (this.instrument > 143 & this.instrument < 151)
+			else if (this.instrument > 143 & this.instrument < 176)
 			{
-				ChangeNoteStyle(this.channelID, NoteStyle.PSG);
-				noteStyle = NoteStyle.PSG;
-				ChangeDuty(this.channelID, .125f * (this.instrument - 143));
-			}
-			else if (this.instrument == 151)
-			{
-				ChangeNoteStyle(this.channelID, NoteStyle.Noise);
-				noteStyle = NoteStyle.PSG;
-				ChangeDuty(this.channelID, -1);
+				while (this.instrument > 151)
+				{
+					this.instrument -= 8;
+				}
+				if (this.instrument == 151)
+				{
+					ChangeNoteStyle(this.channelID, NoteStyle.Noise);
+					noteStyle = NoteStyle.Noise;
+				}
+				else
+				{
+					ChangeNoteStyle(this.channelID, NoteStyle.PSG);
+					noteStyle = NoteStyle.PSG;
+					ChangeDuty(this.channelID, .125f * (this.instrument - 143));
+				}
 			}
 			else
 			{
