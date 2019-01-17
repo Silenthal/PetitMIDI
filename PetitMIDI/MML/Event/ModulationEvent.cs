@@ -5,9 +5,9 @@
         public bool IsModulationOn;
 
         public ModulationEvent(bool modOn)
-            : base(EventTag.Modulation)
+            : base(MMLEventTag.Modulation)
         {
-            this.IsModulationOn = modOn;
+            IsModulationOn = modOn;
         }
     }
 }

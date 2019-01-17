@@ -2,20 +2,12 @@
 {
     public class PanEvent : MMLEvent
     {
-        private int pan;
-
-        public int Pan
-        {
-            get
-            {
-                return this.pan;
-            }
-        }
+        public int Pan { get; }
 
         public PanEvent(int newPan)
-            : base(EventTag.Pan)
+            : base(MMLEventTag.Pan)
         {
-            this.pan = newPan;
+            Pan = newPan;
         }
     }
 }

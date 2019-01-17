@@ -41,12 +41,12 @@
         /// </summary>
         public MMLPlayer()
         {
-            this.midiOut = new SoundGenerator();
+            midiOut = new SoundGenerator();
             for (int i = 0; i < channels.Length; i++)
             {
-                channels[i] = new MMLChannel(i, this.GetNoteTime, this.ChangeTempo, this.midiOut.ChangeDuty, this.midiOut.Send, this.midiOut.ChangeMode, this.midiOut.EnableEnvelope);
+                channels[i] = new MMLChannel(i, GetNoteTime, ChangeTempo, midiOut.ChangeDuty, midiOut.Send, midiOut.ChangeMode, midiOut.EnableEnvelope);
             }
-            this.ResetChannels();
+            ResetChannels();
         }
 
         /// <summary>
@@ -64,8 +64,8 @@
         /// </summary>
         public void Close()
         {
-            this.StopRunning();
-            this.midiOut.Close();
+            StopRunning();
+            midiOut.Close();
         }
 
         /// <summary>
@@ -73,7 +73,7 @@
         /// </summary>
         public void StopRunning()
         {
-            this.running = false;
+            running = false;
         }
 
         /// <summary>
@@ -82,9 +82,9 @@
         /// <param name="mml">The MML string to play.</param>
         public void Play(string mml)
         {
-            if (this.running)
+            if (running)
             {
-                this.StopRunning();
+                StopRunning();
             }
 
             if (mml.Length == 0)
@@ -92,13 +92,13 @@
                 return;
             }
 
-            this.StopAllNotes();
+            StopAllNotes();
 
-            this.ResetChannels();
+            ResetChannels();
             string[] channelMML = MMLStack.PreProcessMML(":0" + mml).Split(':');
             if (channelMML.Length == 1)
             {
-                this.LoadChannelMML(0, channelMML[0]);
+                LoadChannelMML(0, channelMML[0]);
             }
             else
             {
@@ -107,19 +107,19 @@
                     if (channelMML[i] != string.Empty && char.IsDigit(channelMML[i][0]))
                     {
                         int chan = (int)char.GetNumericValue(channelMML[i], 0);
-                        this.LoadChannelMML(chan, channelMML[i].Substring(1));
+                        LoadChannelMML(chan, channelMML[i].Substring(1));
                     }
                 }
             }
 
-            this.running = true;
-            this.timer.Start();
-            while (this.running)
+            running = true;
+            timer.Start();
+            while (running)
             {
-                for (int index = 0; index < this.channels.Length; index++)
+                for (int index = 0; index < channels.Length; index++)
                 {
-                    this.channels[index].Update(this.timer.ElapsedTime());
-                    this.running |= !this.channels[index].IsDone;
+                    channels[index].Update(timer.ElapsedTime());
+                    running |= !channels[index].IsDone;
                 }
             }
         }
@@ -129,8 +129,8 @@
         /// </summary>
         public void ResetChannels()
         {
-            this.tempo = 120;
-            foreach (MMLChannel c in this.channels)
+            tempo = 120;
+            foreach (MMLChannel c in channels)
             {
                 c.ClearMML();
                 c.ResetChannelDefaults();
@@ -146,7 +146,7 @@
         {
             if (channel >= 0 && channel < 8)
             {
-                this.channels[channel].LoadMML(mml);
+                channels[channel].LoadMML(mml);
             }
         }
 
@@ -168,14 +168,14 @@
         /// <param name="newTempo">The new tempo.</param>
         private void ChangeTempo(int newTempo)
         {
-            this.tempo = newTempo;
-            if (this.tempo < 1)
+            tempo = newTempo;
+            if (tempo < 1)
             {
-                this.tempo = 1;
+                tempo = 1;
             }
-            else if (this.tempo > 240)
+            else if (tempo > 240)
             {
-                this.tempo = 240;
+                tempo = 240;
             }
         }
 
@@ -187,7 +187,7 @@
             MIDIMessage mst = new MIDIMessage();
             mst.Status = MessageType.ControlChange;
             mst.ControlType = ControlChangeType.AllNotesOff;
-            this.midiOut.Send(mst);
+            midiOut.Send(mst);
         }
     }
 }

@@ -3,7 +3,7 @@
     public class OctaveDecreaseEvent : MMLEvent
     {
         public OctaveDecreaseEvent()
-            : base(EventTag.OctaveDecrease)
+            : base(MMLEventTag.OctaveDecrease)
         {
         }
     }

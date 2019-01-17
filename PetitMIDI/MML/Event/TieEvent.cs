@@ -3,7 +3,7 @@
     public class TieEvent : MMLEvent
     {
         public TieEvent()
-            : base(EventTag.Tie)
+            : base(MMLEventTag.Tie)
         {
         }
     }

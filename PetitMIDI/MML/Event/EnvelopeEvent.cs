@@ -8,12 +8,12 @@
         public int Release;
 
         public EnvelopeEvent(int attack, int decay, int sustain, int release)
-            : base(EventTag.Envelope)
+            : base(MMLEventTag.Envelope)
         {
-            this.Attack = attack;
-            this.Decay = decay;
-            this.Sustain = sustain;
-            this.Release = release;
+            Attack = attack;
+            Decay = decay;
+            Sustain = sustain;
+            Release = release;
         }
     }
 }

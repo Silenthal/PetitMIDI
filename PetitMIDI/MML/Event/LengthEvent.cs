@@ -2,20 +2,12 @@
 {
     public class LengthEvent : MMLEvent
     {
-        private int length;
-
-        public int Length
-        {
-            get
-            {
-                return this.length;
-            }
-        }
+        public int Length { get; }
 
         public LengthEvent(int newLength)
-            : base(EventTag.Length)
+            : base(MMLEventTag.Length)
         {
-            this.length = newLength;
+            Length = newLength;
         }
     }
 }

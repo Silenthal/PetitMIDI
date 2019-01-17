@@ -1,8 +1,8 @@
 ﻿namespace PetitMIDI
 {
+    using PetitMIDI.MML;
     using System.Threading;
     using System.Windows;
-    using PetitMIDI.MML;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -34,19 +34,13 @@
             {
                 mmlThread.Abort();
             }
-            mmlThread = new Thread(() => { petitMML.Play(mml); });
+            mmlThread = new Thread(() => petitMML.Play(mml));
             mmlThread.Start();
         }
 
         public void RunIt(object sender, RoutedEventArgs e)
         {
-            var lines = new string[mainTextBox.LineCount];
-            for (int line = 0; line < lines.Length; line++)
-            {
-                lines[line] = mainTextBox.GetLineText(line).Replace("\r","").Replace("\n","");
-            }
-
-            StartInterpret(string.Join("", lines));
+            StartInterpret(mainTextBox.Text.Replace("\r", "").Replace("\n", ""));
             mainTextBox.Focus();
         }
     }

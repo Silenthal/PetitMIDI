@@ -22,11 +22,11 @@
         /// </summary>
         /// <param name="note">The value of the note to play.</param>
         public NoteEvent(int note)
-            : base(EventTag.Note)
+            : base(MMLEventTag.Note)
         {
-            this.BaseNote = note & 0x7F;
-            this.NoteValue = -1;
-            this.Multiplier = 1;
+            BaseNote = note & 0x7F;
+            NoteValue = -1;
+            Multiplier = 1;
         }
     }
 }

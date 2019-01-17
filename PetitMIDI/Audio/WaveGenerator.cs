@@ -3,18 +3,6 @@
     using NAudio.Wave;
     using System;
 
-    public enum WaveType
-    {
-        Square,
-        WhiteNoise
-    }
-
-    public enum MixType
-    {
-        Overwrite,
-        Mix
-    }
-
     /// <summary>
     /// A class for providing 32-bit samples of a specified type of wave.
     /// </summary>
@@ -113,7 +101,7 @@
             float appliedAmplitude = Amplitude * Velocity * ampScale;
             int sampleRate = WaveFormat.SampleRate;
             float cycleTime = sampleRate / Frequency;
-            float ratio = cycleTime * this.Duty;
+            float ratio = cycleTime * Duty;
             float currentSample = 0;
             for (int n = 0; n < sampleCount; n++)
             {

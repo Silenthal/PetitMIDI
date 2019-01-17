@@ -8,9 +8,9 @@
         public int Pitch;
 
         public PitchEvent(int note)
-            : base(EventTag.Pitch)
+            : base(MMLEventTag.Pitch)
         {
-            this.Pitch = note & 0x7F;
+            Pitch = note & 0x7F;
         }
     }
 }

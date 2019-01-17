@@ -36,8 +36,8 @@
         /// </summary>
         public MMLStack()
         {
-            this.currentMark = 0;
-            this.stackContents = new StringBuilder();
+            currentMark = 0;
+            stackContents = new StringBuilder();
         }
 
         /// <summary>
@@ -46,8 +46,8 @@
         /// <param name="s">The string to initialize the stack with.</param>
         public MMLStack(string s)
         {
-            this.currentMark = 0;
-            this.stackContents = new StringBuilder(s);
+            currentMark = 0;
+            stackContents = new StringBuilder(s);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@
         {
             get
             {
-                return this.stackContents.Length - this.currentMark;
+                return stackContents.Length - currentMark;
             }
         }
 
@@ -68,7 +68,7 @@
         {
             get
             {
-                return this.Size == 0;
+                return Size == 0;
             }
         }
 
@@ -77,8 +77,8 @@
         /// </summary>
         public void Clear()
         {
-            this.Refresh();
-            this.stackContents.Clear();
+            Refresh();
+            stackContents.Clear();
         }
 
         /// <summary>
@@ -164,34 +164,34 @@
         /// <returns>The number or character at the top of the stack, or an empty string if the stack is empty.</returns>
         public MMLEvent PopEvent()
         {
-            if (this.Size == 0)
+            if (Size == 0)
             {
                 return new NoneEvent();
             }
 
             StringBuilder sb = new StringBuilder();
             int popCount = 0;
-            if (this.PeekChar() == '[')
+            if (PeekChar() == '[')
             {
-                this.PopChar();
+                PopChar();
                 popCount++;
             }
-            else if (this.PeekChar() == ']')
+            else if (PeekChar() == ']')
             {
-                while (this.PeekChar() != '[')
+                while (PeekChar() != '[')
                 {
-                    this.UndoPop();
+                    UndoPop();
                 }
-                this.PopChar();
+                PopChar();
             }
-            switch (this.PeekChar())
+            switch (PeekChar())
             {
                 case 'V': // Velocity
                     {
-                        this.PopChar();
-                        if (char.IsDigit(this.PeekChar()))
+                        PopChar();
+                        if (char.IsDigit(PeekChar()))
                         {
-                            return new VelocityEvent(int.Parse(this.PopNumber()));
+                            return new VelocityEvent(int.Parse(PopNumber()));
                         }
                         else
                         {
@@ -201,53 +201,53 @@
 
                 case '@':
                     {
-                        this.PopChar();
-                        if (char.IsDigit(this.PeekChar())) // Instrument
+                        PopChar();
+                        if (char.IsDigit(PeekChar())) // Instrument
                         {
-                            return new InstrumentEvent(int.Parse(this.PopNumber()));
+                            return new InstrumentEvent(int.Parse(PopNumber()));
                         }
-                        else if (this.PeekChar() == 'D') // Detune
+                        else if (PeekChar() == 'D') // Detune
                         {
-                            this.PopChar();
-                            if (char.IsDigit(this.PeekChar()))
+                            PopChar();
+                            if (char.IsDigit(PeekChar()))
                             {
-                                return new DetuneEvent(int.Parse(this.PopNumber()));
+                                return new DetuneEvent(int.Parse(PopNumber()));
                             }
                             else
                             {
                                 return new InvalidEvent();
                             }
                         }
-                        else if (this.PeekChar() == 'V') // Volume
+                        else if (PeekChar() == 'V') // Volume
                         {
-                            this.PopChar();
-                            if (char.IsDigit(this.PeekChar()))
+                            PopChar();
+                            if (char.IsDigit(PeekChar()))
                             {
-                                return new VolumeEvent(int.Parse(this.PopNumber()));
+                                return new VolumeEvent(int.Parse(PopNumber()));
                             }
                             else
                             {
                                 return new InvalidEvent();
                             }
                         }
-                        else if (this.PeekChar() == 'E') // Envelope
+                        else if (PeekChar() == 'E') // Envelope
                         {
-                            this.PopChar();
-                            if (char.IsDigit(this.PeekChar()))
+                            PopChar();
+                            if (char.IsDigit(PeekChar()))
                             {
                                 EnvelopeEvent e = new EnvelopeEvent(0, 0, 0, 0);
                                 bool goodParsing = true;
                                 int temp;
-                                goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                goodParsing |= int.TryParse(PopNumber(), out temp);
                                 e.Attack = temp;
-                                goodParsing |= this.PopChar() == ',';
-                                goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                goodParsing |= PopChar() == ',';
+                                goodParsing |= int.TryParse(PopNumber(), out temp);
                                 e.Decay = temp;
-                                goodParsing |= this.PopChar() == ',';
-                                goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                goodParsing |= PopChar() == ',';
+                                goodParsing |= int.TryParse(PopNumber(), out temp);
                                 e.Sustain = temp;
-                                goodParsing |= this.PopChar() == ',';
-                                goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                goodParsing |= PopChar() == ',';
+                                goodParsing |= int.TryParse(PopNumber(), out temp);
                                 e.Release = temp;
                                 if (goodParsing)
                                 {
@@ -258,9 +258,9 @@
                                     return new InvalidEvent();
                                 }
                             }
-                            else if (this.PeekChar() == 'R') // Envelope Release
+                            else if (PeekChar() == 'R') // Envelope Release
                             {
-                                this.PopChar();
+                                PopChar();
                                 return new EnvelopeReleaseEvent();
                             }
                             else
@@ -268,20 +268,20 @@
                                 return new InvalidEvent();
                             }
                         }
-                        else if (this.PeekChar() == 'M')
+                        else if (PeekChar() == 'M')
                         {
-                            this.PopChar();
-                            if (this.PeekChar() == 'O') // Modulation On/Off
+                            PopChar();
+                            if (PeekChar() == 'O') // Modulation On/Off
                             {
-                                this.PopChar();
-                                if (this.PeekChar() == 'N')
+                                PopChar();
+                                if (PeekChar() == 'N')
                                 {
-                                    this.PopChar();
+                                    PopChar();
                                     return new ModulationEvent(true);
                                 }
-                                else if (this.PeekChar() == 'F')
+                                else if (PeekChar() == 'F')
                                 {
-                                    this.PopChar();
+                                    PopChar();
                                     return new ModulationEvent(false);
                                 }
                                 else
@@ -289,24 +289,24 @@
                                     return new InvalidEvent();
                                 }
                             }
-                            else if (this.PeekChar() == 'A') // Tremolo
+                            else if (PeekChar() == 'A') // Tremolo
                             {
-                                this.PopChar();
-                                if (char.IsDigit(this.PeekChar()))
+                                PopChar();
+                                if (char.IsDigit(PeekChar()))
                                 {
                                     TremoloEvent e = new TremoloEvent(0, 0, 0, 0);
                                     bool goodParsing = true;
                                     int temp;
-                                    goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                    goodParsing |= int.TryParse(PopNumber(), out temp);
                                     e.Depth = temp;
-                                    goodParsing |= this.PopChar() == ',';
-                                    goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                    goodParsing |= PopChar() == ',';
+                                    goodParsing |= int.TryParse(PopNumber(), out temp);
                                     e.Range = temp;
-                                    goodParsing |= this.PopChar() == ',';
-                                    goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                    goodParsing |= PopChar() == ',';
+                                    goodParsing |= int.TryParse(PopNumber(), out temp);
                                     e.Speed = temp;
-                                    goodParsing |= this.PopChar() == ',';
-                                    goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                    goodParsing |= PopChar() == ',';
+                                    goodParsing |= int.TryParse(PopNumber(), out temp);
                                     e.Delay = temp;
                                     if (goodParsing)
                                     {
@@ -322,24 +322,24 @@
                                     return new InvalidEvent();
                                 }
                             }
-                            else if (this.PeekChar() == 'P') // Vibrato
+                            else if (PeekChar() == 'P') // Vibrato
                             {
-                                this.PopChar();
-                                if (char.IsDigit(this.PeekChar()))
+                                PopChar();
+                                if (char.IsDigit(PeekChar()))
                                 {
                                     VibratoEvent e = new VibratoEvent(0, 0, 0, 0);
                                     bool goodParsing = true;
                                     int temp;
-                                    goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                    goodParsing |= int.TryParse(PopNumber(), out temp);
                                     e.Depth = temp;
-                                    goodParsing |= this.PopChar() == ',';
-                                    goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                    goodParsing |= PopChar() == ',';
+                                    goodParsing |= int.TryParse(PopNumber(), out temp);
                                     e.Range = temp;
-                                    goodParsing |= this.PopChar() == ',';
-                                    goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                    goodParsing |= PopChar() == ',';
+                                    goodParsing |= int.TryParse(PopNumber(), out temp);
                                     e.Speed = temp;
-                                    goodParsing |= this.PopChar() == ',';
-                                    goodParsing |= int.TryParse(this.PopNumber(), out temp);
+                                    goodParsing |= PopChar() == ',';
+                                    goodParsing |= int.TryParse(PopNumber(), out temp);
                                     e.Delay = temp;
                                     if (goodParsing)
                                     {
@@ -368,10 +368,10 @@
 
                 case 'L': // Note Length
                     {
-                        this.PopChar();
-                        if (char.IsDigit(this.PeekChar()))
+                        PopChar();
+                        if (char.IsDigit(PeekChar()))
                         {
-                            return new LengthEvent(int.Parse(this.PopNumber()));
+                            return new LengthEvent(int.Parse(PopNumber()));
                         }
                         else
                         {
@@ -381,10 +381,10 @@
 
                 case 'O': // Octave
                     {
-                        this.PopChar();
-                        if (char.IsDigit(this.PeekChar()))
+                        PopChar();
+                        if (char.IsDigit(PeekChar()))
                         {
-                            return new OctaveEvent(int.Parse(this.PopNumber()));
+                            return new OctaveEvent(int.Parse(PopNumber()));
                         }
                         else
                         {
@@ -394,10 +394,10 @@
 
                 case 'P': // Pan
                     {
-                        this.PopChar();
-                        if (char.IsDigit(this.PeekChar()))
+                        PopChar();
+                        if (char.IsDigit(PeekChar()))
                         {
-                            return new PanEvent(int.Parse(this.PopNumber()));
+                            return new PanEvent(int.Parse(PopNumber()));
                         }
                         else
                         {
@@ -407,10 +407,10 @@
 
                 case 'T': // Tempo
                     {
-                        this.PopChar();
-                        if (char.IsDigit(this.PeekChar()))
+                        PopChar();
+                        if (char.IsDigit(PeekChar()))
                         {
-                            int outNum = int.Parse(this.PopNumber());
+                            int outNum = int.Parse(PopNumber());
                             if (outNum < 1 || outNum > 512)
                             {
                                 return new InvalidEvent();
@@ -425,22 +425,22 @@
 
                 case '<': // Octave Increase
                     {
-                        this.PopChar();
+                        PopChar();
                         return new OctaveIncreaseEvent();
                     }
 
                 case '>': // Octave Decrease
                     {
-                        this.PopChar();
+                        PopChar();
                         return new OctaveDecreaseEvent();
                     }
 
                 case '(': // VelocityIncrease
                     {
-                        this.PopChar();
-                        if (char.IsDigit(this.PeekChar()))
+                        PopChar();
+                        if (char.IsDigit(PeekChar()))
                         {
-                            return new VelocityIncreaseEvent(int.Parse(this.PopNumber()));
+                            return new VelocityIncreaseEvent(int.Parse(PopNumber()));
                         }
                         else
                         {
@@ -450,10 +450,10 @@
 
                 case ')': // VelocityIncrease
                     {
-                        this.PopChar();
-                        if (char.IsDigit(this.PeekChar()))
+                        PopChar();
+                        if (char.IsDigit(PeekChar()))
                         {
-                            return new VelocityDecreaseEvent(int.Parse(this.PopNumber()));
+                            return new VelocityDecreaseEvent(int.Parse(PopNumber()));
                         }
                         else
                         {
@@ -463,7 +463,7 @@
 
                 case '&': // Tie
                     {
-                        this.PopChar();
+                        PopChar();
                         if (PeekChar() >= 'A' && PeekChar() <= 'G')
                         {
                             return new TieEvent();
@@ -476,17 +476,17 @@
 
                 case 'R': // Rest
                     {
-                        this.PopChar();
+                        PopChar();
                         RestEvent re = new RestEvent();
                         int dotCount = 0;
                         bool noteLenSet = false;
                         while (true)
                         {
-                            if (char.IsDigit(this.PeekChar()))//A length value.
+                            if (char.IsDigit(PeekChar()))//A length value.
                             {
                                 if (!noteLenSet)
                                 {
-                                    re.NoteValue = int.Parse(this.PopNumber());
+                                    re.NoteValue = int.Parse(PopNumber());
                                     noteLenSet = true;
                                 }
                                 else
@@ -494,9 +494,9 @@
                                     return new InvalidEvent();
                                 }
                             }
-                            else if (this.PeekChar() == '.')
+                            else if (PeekChar() == '.')
                             {
-                                this.PopChar();
+                                PopChar();
                                 if (dotCount++ < 2)
                                 {
                                     re.Multiplier *= 1.5;
@@ -513,12 +513,12 @@
 
                 case 'N': // Note
                     {
-                        this.PopChar();
+                        PopChar();
                         string pc = "";
                         int conv = 0;
-                        while (char.IsDigit(this.PeekChar()))
+                        while (char.IsDigit(PeekChar()))
                         {
-                            pc += this.PopChar();
+                            pc += PopChar();
                         }
                         if (pc.Length == 0 || !int.TryParse(pc, out conv))
                         {
@@ -538,16 +538,16 @@
                 case 'A':
                 case 'B':
                     {
-                        NoteEvent ne = new NoteEvent(noteVal[this.PopChar() - 'A']);
+                        NoteEvent ne = new NoteEvent(noteVal[PopChar() - 'A']);
                         int dotCount = 0;
                         bool noteLenSet = false;
                         while (true)
                         {
-                            if (char.IsDigit(this.PeekChar()))
+                            if (char.IsDigit(PeekChar()))
                             {
                                 if (!noteLenSet)
                                 {
-                                    ne.NoteValue = int.Parse(this.PopNumber());
+                                    ne.NoteValue = int.Parse(PopNumber());
                                     noteLenSet = true;
                                 }
                                 else
@@ -555,26 +555,26 @@
                                     return new InvalidEvent();
                                 }
                             }
-                            else if (this.PeekChar() == '.')
+                            else if (PeekChar() == '.')
                             {
-                                this.PopChar();
+                                PopChar();
                                 if (dotCount++ < 2)
                                 {
                                     ne.Multiplier *= 1.5;
                                 }
                             }
-                            else if (this.PeekChar() == '+' || this.PeekChar() == '#')
+                            else if (PeekChar() == '+' || PeekChar() == '#')
                             {
-                                this.PopChar();
+                                PopChar();
                                 ne.BaseNote++;
                                 if (ne.BaseNote > 127)
                                 {
                                     return new InvalidEvent();
                                 }
                             }
-                            else if (this.PeekChar() == '-')
+                            else if (PeekChar() == '-')
                             {
-                                this.PopChar();
+                                PopChar();
                                 ne.BaseNote--;
                                 if (ne.BaseNote < 0)
                                 {
@@ -601,12 +601,12 @@
         /// <returns></returns>
         private string PopNumber()
         {
-            if (!this.IsEmpty && char.IsDigit(this.PeekChar()))
+            if (!IsEmpty && char.IsDigit(PeekChar()))
             {
                 StringBuilder sb = new StringBuilder();
-                while (char.IsDigit(this.PeekChar()))
+                while (char.IsDigit(PeekChar()))
                 {
-                    sb.Append(this.PopChar());
+                    sb.Append(PopChar());
                 }
 
                 return sb.ToString();
@@ -622,7 +622,7 @@
         /// </summary>
         public void Refresh()
         {
-            this.currentMark = 0;
+            currentMark = 0;
         }
 
         /// <summary>
@@ -631,7 +631,7 @@
         /// <param name="extraMML">The new MML string.</param>
         public void PushBack(string extraMML)
         {
-            this.stackContents.Append(extraMML);
+            stackContents.Append(extraMML);
         }
 
         /// <summary>
@@ -651,12 +651,12 @@
         /// <returns>The character at the top of the stack, or a null character if the stack is empty.</returns>
         private char PeekChar()
         {
-            if (this.IsEmpty)
+            if (IsEmpty)
             {
-                return this.endCommand;
+                return endCommand;
             }
 
-            return this.stackContents[this.currentMark];
+            return stackContents[currentMark];
         }
 
         /// <summary>
@@ -665,12 +665,12 @@
         /// <returns>The character at the top of the stack, or a null character if the stack is empty.</returns>
         private char PopChar()
         {
-            if (this.IsEmpty)
+            if (IsEmpty)
             {
-                return this.endCommand;
+                return endCommand;
             }
 
-            return this.stackContents[this.currentMark++];
+            return stackContents[currentMark++];
         }
     }
 }

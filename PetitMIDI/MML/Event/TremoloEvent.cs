@@ -8,12 +8,12 @@
         public int Delay;
 
         public TremoloEvent(int depth, int range, int speed, int delay)
-            : base(EventTag.Tremolo)
+            : base(MMLEventTag.Tremolo)
         {
-            this.Depth = depth;
-            this.Range = range;
-            this.Speed = speed;
-            this.Delay = delay;
+            Depth = depth;
+            Range = range;
+            Speed = speed;
+            Delay = delay;
         }
     }
 }

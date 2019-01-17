@@ -3,7 +3,7 @@
     public class InvalidEvent : MMLEvent
     {
         public InvalidEvent()
-            : base(EventTag.Invalid)
+            : base(MMLEventTag.Invalid)
         {
         }
     }

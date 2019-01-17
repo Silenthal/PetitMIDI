@@ -5,7 +5,7 @@
         public int Detune;
 
         public DetuneEvent(int detune)
-            : base(EventTag.Detune)
+            : base(MMLEventTag.Detune)
         {
             Detune = detune;
         }

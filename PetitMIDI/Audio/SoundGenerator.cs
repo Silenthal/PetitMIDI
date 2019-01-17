@@ -4,14 +4,6 @@
     using NAudio.Midi;
     using NAudio.Wave;
 
-    public enum NoteStyle
-    {
-        Regular,
-        Drums,
-        PSG,
-        Noise
-    }
-
     /// <summary>
     /// Represents the sound creator for MML.
     /// </summary>
@@ -27,7 +19,7 @@
 
         public SoundGenerator()
         {
-            this.mixer.SetWaveFormat(44100, 1);
+            mixer.SetWaveFormat(44100, 1);
             Open(0);
         }
 
@@ -38,23 +30,23 @@
             {
                 noteMode[i] = NoteStyle.Regular;
             }
-            this.midiOut = new MidiOut(deviceID);
-            this.waveOut = new WasapiOut(AudioClientShareMode.Shared, 5);
-            this.waveOut.Init(this.mixer);
-            this.waveOut.Play();
+            midiOut = new MidiOut(deviceID);
+            waveOut = new WasapiOut(AudioClientShareMode.Shared, 5);
+            waveOut.Init(mixer);
+            waveOut.Play();
         }
 
         public void Close()
         {
             MIDIMessage ms = new MIDIMessage();
             ms.ControlType = ControlChangeType.AllNotesOff;
-            this.midiOut.Send(ms.RawData);
-            this.midiOut.Close();
+            midiOut.Send(ms.RawData);
+            midiOut.Close();
             for (int i = 0; i < 8; i++)
             {
-                this.mixer.Gate(i, false);
+                mixer.Gate(i, false);
             }
-            this.waveOut.Stop();
+            waveOut.Stop();
         }
 
         public void ChangeMode(int channel, NoteStyle mode)
@@ -64,11 +56,11 @@
                 noteMode[channel] = mode;
                 if (mode == NoteStyle.Noise)
                 {
-                    this.mixer.SetGeneratorType(channel, WaveType.WhiteNoise);
+                    mixer.SetGeneratorType(channel, WaveType.WhiteNoise);
                 }
                 else
                 {
-                    this.mixer.SetGeneratorType(channel, WaveType.Square);
+                    mixer.SetGeneratorType(channel, WaveType.Square);
                 }
             }
         }
@@ -83,17 +75,17 @@
                 message.Status = MessageType.ControlChange;
                 message.ControlType = ControlChangeType.SoundController04; // Attack
                 message.ControlValue = attack;
-                this.midiOut.Send(message.RawData);
+                midiOut.Send(message.RawData);
                 message.ControlType = ControlChangeType.SoundController06; // Decay
                 message.ControlValue = decay;
-                this.midiOut.Send(message.RawData);
+                midiOut.Send(message.RawData);
                 message.ControlType = ControlChangeType.SoundController03; // Release
                 message.ControlValue = release;
-                this.midiOut.Send(message.RawData);
+                midiOut.Send(message.RawData);
             }
             else
             {
-                this.mixer.SetEnvelope(channel, attack, decay, sustain, release);
+                mixer.SetEnvelope(channel, attack, decay, sustain, release);
             }
         }
 
@@ -105,7 +97,7 @@
                 {
                     message.Channel = 9;
                 }
-                this.midiOut.Send(message.RawData);
+                midiOut.Send(message.RawData);
             }
             else
             {
@@ -113,15 +105,15 @@
                 {
                     case MessageType.NoteOn:
                         {
-                            this.mixer.SetFrequency(message.Channel, this.frequencyTable[message.Data1]);
-                            this.mixer.SetVelocity(message.Channel, message.Data2 / 127.0f);
-                            this.mixer.Gate(message.Channel, true);
+                            mixer.SetFrequency(message.Channel, frequencyTable[message.Data1]);
+                            mixer.SetVelocity(message.Channel, message.Data2 / 127.0f);
+                            mixer.Gate(message.Channel, true);
                         }
                         break;
 
                     case MessageType.NoteOff:
                         {
-                            this.mixer.Gate(message.Channel, false);
+                            mixer.Gate(message.Channel, false);
                         }
                         break;
 
@@ -147,7 +139,7 @@
 
         public void ChangeDuty(int channel, float newDuty)
         {
-            this.mixer.SetDuty(channel, newDuty);
+            mixer.SetDuty(channel, newDuty);
         }
 
         private float[] frequencyTable = new float[128]

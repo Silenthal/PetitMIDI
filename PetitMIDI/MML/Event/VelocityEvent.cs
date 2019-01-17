@@ -2,20 +2,12 @@
 {
     public class VelocityEvent : MMLEvent
     {
-        private int velocity;
-
-        public int Velocity
-        {
-            get
-            {
-                return this.velocity;
-            }
-        }
+        public int Velocity { get; }
 
         public VelocityEvent(int newVelocity)
-            : base(EventTag.Velocity)
+            : base(MMLEventTag.Velocity)
         {
-            this.velocity = newVelocity;
+            Velocity = newVelocity;
         }
     }
 }

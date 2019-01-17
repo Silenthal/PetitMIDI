@@ -3,7 +3,7 @@
     public class VolumeEvent : MMLEvent
     {
         public VolumeEvent(int newVolume)
-            : base(EventTag.Volume)
+            : base(MMLEventTag.Volume)
         {
             this.Volume = newVolume;
         }

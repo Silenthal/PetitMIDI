@@ -2,20 +2,12 @@
 {
     public class TempoEvent : MMLEvent
     {
-        private int tempo;
-
-        public int Tempo
-        {
-            get
-            {
-                return this.tempo;
-            }
-        }
+        public int Tempo { get; }
 
         public TempoEvent(int newTempo)
-            : base(EventTag.Tempo)
+            : base(MMLEventTag.Tempo)
         {
-            this.tempo = newTempo;
+            Tempo = newTempo;
         }
     }
 }

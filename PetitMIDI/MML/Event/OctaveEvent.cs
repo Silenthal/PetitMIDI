@@ -2,20 +2,12 @@
 {
     public class OctaveEvent : MMLEvent
     {
-        private int octave;
-
-        public int Octave
-        {
-            get
-            {
-                return this.octave;
-            }
-        }
+        public int Octave { get; }
 
         public OctaveEvent(int newOctave)
-            : base(EventTag.Octave)
+            : base(MMLEventTag.Octave)
         {
-            this.octave = newOctave;
+            Octave = newOctave;
         }
     }
 }

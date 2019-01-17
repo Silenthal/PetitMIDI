@@ -24,9 +24,9 @@
         /// </summary>
         public HighResTimer()
         {
-            this.startTime = 0;
+            startTime = 0;
 
-            if (!UnsafeNativeMethods.QueryPerformanceFrequency(out this.frequency))
+            if (!UnsafeNativeMethods.QueryPerformanceFrequency(out frequency))
             {
                 throw new Win32Exception();
             }
@@ -37,7 +37,7 @@
         /// </summary>
         public void Start()
         {
-            UnsafeNativeMethods.QueryPerformanceCounter(out this.startTime);
+            UnsafeNativeMethods.QueryPerformanceCounter(out startTime);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@
         {
             long tempTime = 0;
             UnsafeNativeMethods.QueryPerformanceCounter(out tempTime);
-            return (tempTime - this.startTime) / (double)this.frequency;
+            return (tempTime - startTime) / (double)frequency;
         }
 
         /// <summary>

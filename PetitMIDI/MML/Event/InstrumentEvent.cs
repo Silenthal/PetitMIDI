@@ -2,20 +2,12 @@
 {
     public class InstrumentEvent : MMLEvent
     {
-        private int instrument;
-
-        public int Instrument
-        {
-            get
-            {
-                return this.instrument;
-            }
-        }
+        public int Instrument { get; }
 
         public InstrumentEvent(int newInstrument)
-            : base(EventTag.Instrument)
+            : base(MMLEventTag.Instrument)
         {
-            this.instrument = newInstrument;
+            Instrument = newInstrument;
         }
     }
 }

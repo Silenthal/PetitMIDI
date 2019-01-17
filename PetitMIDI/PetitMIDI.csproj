@@ -53,7 +53,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Audio\Envelope.cs" />
+    <Compile Include="Audio\MixType.cs" />
+    <Compile Include="Audio\NoteStyle.cs" />
+    <Compile Include="Audio\State.cs" />
+    <Compile Include="Audio\WaveType.cs" />
+    <Compile Include="ControlChangeType.cs" />
     <Compile Include="HighResTimer.cs" />
+    <Compile Include="MessageType.cs" />
     <Compile Include="MIDIMessage.cs" />
     <Compile Include="MML\Event\PitchEvent.cs" />
     <Compile Include="MML\Event\TieEvent.cs" />

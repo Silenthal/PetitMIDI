@@ -5,9 +5,9 @@
         public int IncrementAmount;
 
         public VelocityIncreaseEvent(int incrementAmount)
-            : base(EventTag.VelocityIncrease)
+            : base(MMLEventTag.VelocityIncrease)
         {
-            this.IncrementAmount = incrementAmount;
+            IncrementAmount = incrementAmount;
         }
     }
 }

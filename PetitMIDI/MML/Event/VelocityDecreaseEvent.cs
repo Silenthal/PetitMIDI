@@ -5,9 +5,9 @@
         public int DecrementAmount;
 
         public VelocityDecreaseEvent(int decrementAmount)
-            : base(EventTag.VelocityDecrease)
+            : base(MMLEventTag.VelocityDecrease)
         {
-            this.DecrementAmount = decrementAmount;
+            DecrementAmount = decrementAmount;
         }
     }
 }

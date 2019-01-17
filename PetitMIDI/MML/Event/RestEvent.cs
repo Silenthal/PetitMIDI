@@ -14,10 +14,10 @@
         }
 
         public RestEvent()
-            : base(EventTag.Rest)
+            : base(MMLEventTag.Rest)
         {
-            this.NoteValue = -1;
-            this.Multiplier = 1;
+            NoteValue = -1;
+            Multiplier = 1;
         }
     }
 }

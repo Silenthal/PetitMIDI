@@ -9,23 +9,11 @@ namespace PetitMIDI.Audio
     public class Envelope
     {
         /// <summary>
-        /// Represents the current state of the envelope.
-        /// </summary>
-        public enum State
-        {
-            Idle,
-            Attack,
-            Decay,
-            Sustain,
-            Release
-        }
-
-        /// <summary>
         /// Represents the last output of the envelope.
         /// </summary>
         public float Output { get; private set; }
 
-        private State state = State.Idle;
+        private EnvelopeState state = EnvelopeState.Idle;
 
         private float attackRate;
         private float decayRate;
@@ -64,43 +52,43 @@ namespace PetitMIDI.Audio
         {
             switch (state)
             {
-                case State.Idle:
+                case EnvelopeState.Idle:
                     break;
 
-                case State.Attack:
+                case EnvelopeState.Attack:
                     Output = attackBase + Output * attackCoef;
                     if (Output >= 1.0f)
                     {
                         Output = 1.0f;
-                        state = State.Decay;
+                        state = EnvelopeState.Decay;
                     }
                     break;
 
-                case State.Decay:
+                case EnvelopeState.Decay:
                     Output = decayBase + Output * decayCoef;
                     if (Output <= sustainLevel)
                     {
                         Output = sustainLevel;
-                        state = State.Sustain;
+                        state = EnvelopeState.Sustain;
                     }
                     break;
 
-                case State.Sustain:
+                case EnvelopeState.Sustain:
                     break;
 
-                case State.Release:
+                case EnvelopeState.Release:
                     Output = releaseBase + Output * releaseCoef;
                     if (Output <= 0.0f)
                     {
                         Output = 0.0f;
-                        state = State.Idle;
+                        state = EnvelopeState.Idle;
                     }
                     break;
             }
             return Output;
         }
 
-        public State GetCurrentState()
+        public EnvelopeState GetCurrentState()
         {
             return state;
         }
@@ -109,11 +97,11 @@ namespace PetitMIDI.Audio
         {
             if (isActive)
             {
-                state = State.Attack;
+                state = EnvelopeState.Attack;
             }
-            else if (state != State.Idle)
+            else if (state != EnvelopeState.Idle)
             {
-                state = State.Release;
+                state = EnvelopeState.Release;
             }
         }
 
@@ -173,7 +161,7 @@ namespace PetitMIDI.Audio
 
         public void Reset()
         {
-            state = State.Idle;
+            state = EnvelopeState.Idle;
             Output = 0.0f;
         }
 

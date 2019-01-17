@@ -93,18 +93,18 @@
             ChangeNoteStyleDelegate noteStyleFunction,
             ChangeEnvelopeDelegate changeEnvelopeFunction)
         {
-            this.channelID = channel;
+            channelID = channel;
 
-            this.GetNoteTime = noteTimeFunction;
-            this.ChangeTempo = tempoFunction;
-            this.SendEvent = eventFunction;
-            this.ChangeDuty = dutyFunction;
-            this.ChangeNoteStyle = noteStyleFunction;
-            this.ChangeEnvelope = changeEnvelopeFunction;
+            GetNoteTime = noteTimeFunction;
+            ChangeTempo = tempoFunction;
+            SendEvent = eventFunction;
+            ChangeDuty = dutyFunction;
+            ChangeNoteStyle = noteStyleFunction;
+            ChangeEnvelope = changeEnvelopeFunction;
 
-            this.mStack = new MMLStack();
+            mStack = new MMLStack();
 
-            this.ResetChannelDefaults();
+            ResetChannelDefaults();
         }
 
         /// <summary>
@@ -114,24 +114,24 @@
         {
             get
             {
-                return this.mStack.IsEmpty;
+                return mStack.IsEmpty;
             }
         }
 
         /// <summary>
         /// Resets the default values for the MML being played.
         /// </summary>
-        /// <param name="channelOpen">If the channel is currently open, then do this.</param>
+        /// <param name="channelOpen">If the channel is currently open, then do </param>
         public void ResetChannelDefaults()
         {
-            this.velocity = 127;
-            this.octave = 5;
-            this.noteTimeValue = 4;
-            this.nextUpdateTime = 0;
-            this.lastNotePlayed = 0;
-            this.noteStyle = NoteStyle.Regular;
-            this.mStack.Refresh();
-            ChangeNoteStyle(this.channelID, this.noteStyle);
+            velocity = 127;
+            octave = 5;
+            noteTimeValue = 4;
+            nextUpdateTime = 0;
+            lastNotePlayed = 0;
+            noteStyle = NoteStyle.Regular;
+            mStack.Refresh();
+            ChangeNoteStyle(channelID, noteStyle);
         }
 
         /// <summary>
@@ -139,9 +139,9 @@
         /// </summary>
         public void ClearMML()
         {
-            this.mStack.Clear();
-            this.ChangeInstrument(0);
-            this.ChangeVolume(127);
+            mStack.Clear();
+            ChangeInstrument(0);
+            ChangeVolume(127);
         }
 
         /// <summary>
@@ -151,8 +151,8 @@
         public void LoadMML(string mml)
         {
             mStack.PushBack(mml);
-            this.ChangeInstrument(0);
-            this.ChangeVolume(127);
+            ChangeInstrument(0);
+            ChangeVolume(127);
         }
 
         /// <summary>
@@ -161,166 +161,166 @@
         /// <param name="time">The current time.</param>
         public void Update(double time)
         {
-            if (time < this.nextUpdateTime)
+            if (time < nextUpdateTime)
             {
                 return;
             }
-            if (this.mStack.IsEmpty)
+            if (mStack.IsEmpty)
             {
-                this.StopNote(this.lastNotePlayed);
+                StopNote(lastNotePlayed);
                 return;
             }
             bool tieTriggered = false;
             MMLEvent command = mStack.PopEvent();
-            if (command.Tag == EventTag.None)
+            if (command.Tag == MMLEventTag.None)
             {
                 return;
             }
-            else if (command.Tag == EventTag.Tie)
+            else if (command.Tag == MMLEventTag.Tie)
             {
                 command = mStack.PopEvent();
                 tieTriggered = true;
             }
-            else if (this.isNoteBeingPlayed)
+            else if (isNoteBeingPlayed)
             {
-                this.StopNote(this.lastNotePlayed);
+                StopNote(lastNotePlayed);
             }
             switch (command.Tag)
             {
-                case EventTag.Velocity:
+                case MMLEventTag.Velocity:
                     {
-                        this.ChangeVelocity((command as VelocityEvent).Velocity);
+                        ChangeVelocity((command as VelocityEvent).Velocity);
                     }
 
                     break;
 
-                case EventTag.VelocityIncrease:
+                case MMLEventTag.VelocityIncrease:
                     {
-                        this.ChangeVelocity(this.velocity + (command as VelocityIncreaseEvent).IncrementAmount);
+                        ChangeVelocity(velocity + (command as VelocityIncreaseEvent).IncrementAmount);
                     }
 
                     break;
 
-                case EventTag.VelocityDecrease:
+                case MMLEventTag.VelocityDecrease:
                     {
-                        this.ChangeVelocity(this.velocity - (command as VelocityDecreaseEvent).DecrementAmount);
+                        ChangeVelocity(velocity - (command as VelocityDecreaseEvent).DecrementAmount);
                     }
 
                     break;
 
-                case EventTag.Volume:
+                case MMLEventTag.Volume:
                     {
-                        this.ChangeVolume((command as VolumeEvent).Volume);
+                        ChangeVolume((command as VolumeEvent).Volume);
                     }
 
                     break;
 
-                case EventTag.Instrument:
+                case MMLEventTag.Instrument:
                     {
-                        this.ChangeInstrument((command as InstrumentEvent).Instrument);
+                        ChangeInstrument((command as InstrumentEvent).Instrument);
                     }
 
                     break;
 
-                case EventTag.Length:
+                case MMLEventTag.Length:
                     {
-                        this.ChangeNoteLength((command as LengthEvent).Length);
+                        ChangeNoteLength((command as LengthEvent).Length);
                     }
 
                     break;
 
-                case EventTag.Octave:
+                case MMLEventTag.Octave:
                     {
-                        this.ChangeOctave((command as OctaveEvent).Octave);
+                        ChangeOctave((command as OctaveEvent).Octave);
                     }
 
                     break;
 
-                case EventTag.Pan:
+                case MMLEventTag.Pan:
                     {
-                        this.ChangePan((command as PanEvent).Pan);
+                        ChangePan((command as PanEvent).Pan);
                     }
 
                     break;
 
-                case EventTag.Tempo:
+                case MMLEventTag.Tempo:
                     {
-                        this.ChangeTempo((command as TempoEvent).Tempo);
+                        ChangeTempo((command as TempoEvent).Tempo);
                     }
 
                     break;
 
-                case EventTag.OctaveIncrease:
+                case MMLEventTag.OctaveIncrease:
                     {
-                        this.IncreaseOctave();
+                        IncreaseOctave();
                     }
 
                     break;
 
-                case EventTag.OctaveDecrease:
+                case MMLEventTag.OctaveDecrease:
                     {
-                        this.DecreaseOctave();
+                        DecreaseOctave();
                     }
 
                     break;
 
-                case EventTag.Envelope:
+                case MMLEventTag.Envelope:
                     {
                         EnvelopeEvent ev = command as EnvelopeEvent;
-                        this.ChangeEnvelope(channelID, ev.Attack, ev.Decay, ev.Sustain, ev.Release);
+                        ChangeEnvelope(channelID, ev.Attack, ev.Decay, ev.Sustain, ev.Release);
                     }
                     break;
 
-                case EventTag.EnvelopeRelease:
+                case MMLEventTag.EnvelopeRelease:
                     {
-                        if (this.noteStyle == NoteStyle.Regular || this.noteStyle == NoteStyle.Drums)
+                        if (noteStyle == NoteStyle.Regular || noteStyle == NoteStyle.Drums)
                         {
-                            this.ChangeEnvelope(channelID, 64, 64, 64, 64);
+                            ChangeEnvelope(channelID, 64, 64, 64, 64);
                         }
                         else
                         {
-                            this.ChangeEnvelope(channelID, 0, 0, 127, 0);
+                            ChangeEnvelope(channelID, 0, 0, 127, 0);
                         }
                     }
                     break;
 
-                case EventTag.Rest:
+                case MMLEventTag.Rest:
                     {
                         RestEvent restTemp = command as RestEvent;
                         if (restTemp.NoteValue == -1)
                         {
-                            restTemp.NoteValue = this.noteTimeValue;
+                            restTemp.NoteValue = noteTimeValue;
                         }
 
-                        this.nextUpdateTime += this.GetNoteTime(restTemp.ActualNoteValue);
+                        nextUpdateTime += GetNoteTime(restTemp.ActualNoteValue);
                     }
 
                     break;
 
-                case EventTag.Note:
+                case MMLEventTag.Note:
                     {
                         NoteEvent noteTemp = command as NoteEvent;
-                        noteTemp.BaseNote += this.octave * 12;
+                        noteTemp.BaseNote += octave * 12;
                         if (noteTemp.NoteValue == -1)
                         {
-                            noteTemp.NoteValue = this.noteTimeValue;
+                            noteTemp.NoteValue = noteTimeValue;
                         }
                         if (!tieTriggered)
                         {
-                            this.PlayNote(noteTemp.BaseNote);
-                            this.lastNotePlayed = noteTemp.BaseNote;
+                            PlayNote(noteTemp.BaseNote);
+                            lastNotePlayed = noteTemp.BaseNote;
                         }
-                        this.nextUpdateTime += this.GetNoteTime(noteTemp.ActualNoteValue);
+                        nextUpdateTime += GetNoteTime(noteTemp.ActualNoteValue);
                     }
 
                     break;
 
-                case EventTag.Pitch:
+                case MMLEventTag.Pitch:
                     {
                         PitchEvent noteTemp = command as PitchEvent;
-                        this.PlayNote(noteTemp.Pitch);
-                        this.lastNotePlayed = noteTemp.Pitch;
-                        this.nextUpdateTime += this.GetNoteTime(this.noteTimeValue);
+                        PlayNote(noteTemp.Pitch);
+                        lastNotePlayed = noteTemp.Pitch;
+                        nextUpdateTime += GetNoteTime(noteTimeValue);
                     }
 
                     break;
@@ -337,14 +337,14 @@
         /// <param name="forcePSG">If true, forces the note being started to be a PSG note.</param>
         private void PlayNote(int baseNote, bool forcePSG = false)
         {
-            this.isNoteBeingPlayed = true;
+            isNoteBeingPlayed = true;
             int tempNote = baseNote;
             MIDIMessage message = new MIDIMessage();
             message.Status = MessageType.NoteOn;
             message.Data1 = baseNote;
-            message.Data2 = this.velocity;
+            message.Data2 = velocity;
             message.Channel = channelID;
-            if (this.noteStyle == NoteStyle.Drums)
+            if (noteStyle == NoteStyle.Drums)
             {
                 if (message.Data1 < 0x23)
                 {
@@ -365,13 +365,13 @@
         /// <param name="forcePSG">If true, force the note being stopped to be a PSG note.</param>
         private void StopNote(int baseNote, bool forcePSG = false)
         {
-            this.isNoteBeingPlayed = false;
+            isNoteBeingPlayed = false;
             MIDIMessage message = new MIDIMessage();
             message.Status = MessageType.NoteOn;
             message.Data1 = baseNote;
             message.Data2 = 0;
             message.Channel = channelID;
-            if (this.noteStyle == NoteStyle.Drums)
+            if (noteStyle == NoteStyle.Drums)
             {
                 if (message.Data1 < 0x23)
                 {
@@ -392,14 +392,14 @@
         /// <param name="newVelocity">The new velocity.</param>
         private void ChangeVelocity(int newVelocity)
         {
-            this.velocity = newVelocity;
-            if (this.velocity < 0)
+            velocity = newVelocity;
+            if (velocity < 0)
             {
-                this.velocity = 0;
+                velocity = 0;
             }
-            if (this.velocity > 127)
+            if (velocity > 127)
             {
-                this.velocity = 127;
+                velocity = 127;
             }
         }
 
@@ -431,14 +431,14 @@
         /// <param name="newNoteLength">The new note length.</param>
         private void ChangeNoteLength(int newNoteLength)
         {
-            this.noteTimeValue = newNoteLength;
-            if (this.noteTimeValue < 1)
+            noteTimeValue = newNoteLength;
+            if (noteTimeValue < 1)
             {
-                this.noteTimeValue = 1;
+                noteTimeValue = 1;
             }
-            else if (this.noteTimeValue > 192)
+            else if (noteTimeValue > 192)
             {
-                this.noteTimeValue = 192;
+                noteTimeValue = 192;
             }
         }
 
@@ -453,38 +453,38 @@
             // 152-159
             // 160-167
             // 168-175
-            this.instrument = newInstrument;
-            if (this.instrument < 128)
+            instrument = newInstrument;
+            if (instrument < 128)
             {
-                ChangeNoteStyle(this.channelID, NoteStyle.Regular);
+                ChangeNoteStyle(channelID, NoteStyle.Regular);
                 noteStyle = NoteStyle.Regular;
                 MIDIMessage mst = new MIDIMessage();
                 mst.Channel = channelID;
                 mst.Status = MessageType.ProgramChange;
-                mst.Data1 = this.instrument;
+                mst.Data1 = instrument;
                 SendEvent(mst);
             }
-            else if (this.instrument > 143 & this.instrument < 176)
+            else if (instrument > 143 & instrument < 176)
             {
-                while (this.instrument > 151)
+                while (instrument > 151)
                 {
-                    this.instrument -= 8;
+                    instrument -= 8;
                 }
-                if (this.instrument == 151)
+                if (instrument == 151)
                 {
-                    ChangeNoteStyle(this.channelID, NoteStyle.Noise);
+                    ChangeNoteStyle(channelID, NoteStyle.Noise);
                     noteStyle = NoteStyle.Noise;
                 }
                 else
                 {
-                    ChangeNoteStyle(this.channelID, NoteStyle.PSG);
+                    ChangeNoteStyle(channelID, NoteStyle.PSG);
                     noteStyle = NoteStyle.PSG;
-                    ChangeDuty(this.channelID, .125f * (this.instrument - 143));
+                    ChangeDuty(channelID, .125f * (instrument - 143));
                 }
             }
             else
             {
-                ChangeNoteStyle(this.channelID, NoteStyle.Drums);
+                ChangeNoteStyle(channelID, NoteStyle.Drums);
                 noteStyle = NoteStyle.Drums;
             }
         }
@@ -509,14 +509,14 @@
         /// <param name="newOctave">The octave to change to.</param>
         private void ChangeOctave(int newOctave)
         {
-            this.octave = newOctave + 1;
-            if (this.octave < 1)
+            octave = newOctave + 1;
+            if (octave < 1)
             {
-                this.octave = 1;
+                octave = 1;
             }
-            else if (this.octave > 8)
+            else if (octave > 8)
             {
-                this.octave = 8;
+                octave = 8;
             }
         }
 
@@ -526,9 +526,9 @@
         private void IncreaseOctave()
         {
             octave++;
-            if (this.octave > 9)
+            if (octave > 9)
             {
-                this.octave = 9;
+                octave = 9;
             }
         }
 
@@ -538,9 +538,9 @@
         private void DecreaseOctave()
         {
             octave--;
-            if (this.octave < 1)
+            if (octave < 1)
             {
-                this.octave = 1;
+                octave = 1;
             }
         }
 
