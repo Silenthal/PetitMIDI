@@ -94,6 +94,10 @@ namespace PetitMIDI.Audio
             return Output;
         }
 
+        /// <summary>
+        /// Controls the activation of the envelope.
+        /// </summary>
+        /// <param name="isActive">If true, sets the envelope to attack. If false, sets the envelope to release.</param>
         public void Gate(bool isActive)
         {
             if (isActive)

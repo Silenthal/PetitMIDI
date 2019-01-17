@@ -10,7 +10,7 @@
     /// </summary>
     public class MMLStack
     {
-        private static int[] noteVal = { 9, 11, 0, 2, 4, 5, 7 };
+        private static readonly int[] noteVal = { 9, 11, 0, 2, 4, 5, 7 };
 
         /// <summary>
         /// The contents of the stack.
@@ -29,7 +29,7 @@
         /// <summary>
         /// The character to return for an empty stack pop.
         /// </summary>
-        private char endCommand = '\0';
+        private const char endCommand = '\0';
 
         /// <summary>
         /// Initilaizes a new instance of the <see cref="MMLStack"/> class.
@@ -90,10 +90,12 @@
         {
             StringBuilder fst = new StringBuilder(mml.ToUpper());
             fst = fst.Replace(" ", "");
+
+            // Remove empty loops
             fst = fst.Replace("{}", "");
             fst = fst.Replace("[]", "");
 
-            //First, check that all groups are closed properly.
+            //Check that all groups are closed properly.
             Stack<char> fStack = new Stack<char>();
             bool good = true;
             for (int i = 0; i < fst.Length; i++)
@@ -133,7 +135,7 @@
                 return "";
             }
 
-            //Then, replace macro definitions.
+            // Expand macro definitions.
             while (macroRegex.IsMatch(fst.ToString()))
             {
                 var mfs = macroRegex.Match(fst.ToString()).Groups;
@@ -141,14 +143,14 @@
                 fst = fst.Replace("{" + mfs[1].Value + "}", mfs[2].Value);
             }
 
-            //Then, replace multiloops.
+            // Expand multiloops.
             while (loopRegex.IsMatch(fst.ToString()))
             {
                 var mfs = loopRegex.Match(fst.ToString()).Groups;
                 int startIndex = mfs[0].Index;
                 fst = fst.Remove(startIndex, mfs[0].Length);
 
-                //Copy the resultant MML (number) times.
+                // Copy the resultant MML (number) times.
                 for (int i = 0; i < int.Parse(mfs[2].Value); i++)
                 {
                     fst = fst.Insert(startIndex, mfs[1].Value);
@@ -168,13 +170,10 @@
             {
                 return new NoneEvent();
             }
-
-            StringBuilder sb = new StringBuilder();
-            int popCount = 0;
+            
             if (PeekChar() == '[')
             {
                 PopChar();
-                popCount++;
             }
             else if (PeekChar() == ']')
             {

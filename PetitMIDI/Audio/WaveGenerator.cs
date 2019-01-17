@@ -8,10 +8,9 @@
     /// </summary>
     public class WaveGenerator : WaveProvider32
     {
-        private const float ampScale = 0.08f;
         private static Random r = new Random();
 
-        private int sample = 0;
+        private int currentSample = 0;
         private float frequency = 440f;
         private Envelope envelope;
 
@@ -26,7 +25,7 @@
             }
             set
             {
-                sample = (int)(sample * frequency / value);
+                currentSample = (int)(currentSample * frequency / value);
                 frequency = value;
             }
         }
@@ -99,36 +98,46 @@
         /// <returns>The number of samples written to the buffer.</returns>
         public int Read(float[] buffer, int offset, int sampleCount, MixType mixType)
         {
-            float appliedAmplitude = Amplitude * Velocity * ampScale;
+            // Amplitude is adjusted down based on the velocity and the general amplitude scale
+            float appliedAmplitude = Amplitude * Velocity * Config.AmplitudeScale;
             int sampleRate = WaveFormat.SampleRate;
+
+            // The time of a full cycle, as a portion of the full sample rate.
             float cycleTime = sampleRate / Frequency;
+
+            // For square waves, the ratio is the portion of the cycle time that the wave is positive.
             float ratio = cycleTime * Duty;
-            float currentSample = 0;
+            float outputSample = 0;
             for (int n = 0; n < sampleCount; n++)
             {
                 switch (GeneratorType)
                 {
                     case WaveType.Square:
                     default:
-                        currentSample = appliedAmplitude * Math.Sign(ratio - sample);
+                        // Sample is between 1 and -1, and is positive for a time dependent on the duty cycle.
+                        outputSample = appliedAmplitude * Math.Sign(ratio - currentSample);
                         break;
 
                     case WaveType.WhiteNoise:
-                        currentSample = appliedAmplitude * (float)(2 * r.NextDouble() - 1);
+                        // Sample is random and doesn't take the current sample into account
+                        outputSample = appliedAmplitude * (float)(2 * r.NextDouble() - 1);
                         break;
                 }
+                // Depending on the mix mode, either overwrite the sample that exists in the buffer,
+                // or add to it. Each sample is also modified by the envelope.
                 if (mixType == MixType.Overwrite)
                 {
-                    buffer[n + offset] = currentSample * envelope.Process();
+                    buffer[n + offset] = outputSample * envelope.Process();
                 }
                 else
                 {
-                    buffer[n + offset] += currentSample * envelope.Process();
+                    buffer[n + offset] += outputSample * envelope.Process();
                 }
-                sample++;
-                if (sample > cycleTime)
+                // Increment the sample and cap it to the cycle time.
+                currentSample++;
+                if (currentSample > cycleTime)
                 {
-                    sample = (int)(sample - cycleTime + 0.5f);
+                    currentSample = (int)(currentSample - cycleTime + 0.5f);
                 }
             }
             return sampleCount;

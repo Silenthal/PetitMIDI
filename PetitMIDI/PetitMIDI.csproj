@@ -57,6 +57,7 @@
     <Compile Include="Audio\NoteStyle.cs" />
     <Compile Include="Audio\EnvelopeState.cs" />
     <Compile Include="Audio\WaveType.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="ControlChangeType.cs" />
     <Compile Include="HighResTimer.cs" />
     <Compile Include="MessageType.cs" />
