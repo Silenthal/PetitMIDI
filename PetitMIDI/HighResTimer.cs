@@ -48,7 +48,7 @@
         {
             long tempTime = 0;
             UnsafeNativeMethods.QueryPerformanceCounter(out tempTime);
-            return (double)(tempTime - this.startTime) / (double)this.frequency;
+            return (tempTime - this.startTime) / (double)this.frequency;
         }
 
         /// <summary>

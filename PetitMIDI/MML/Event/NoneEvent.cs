@@ -1,9 +1,9 @@
 ﻿namespace PetitMIDI.MML.Event
 {
-	public class NoneEvent : MMLEvent
-	{
-		public NoneEvent()
-			: base(EventTag.None)
-		{ }
-	}
+    public class NoneEvent : MMLEvent
+    {
+        public NoneEvent()
+            : base(EventTag.None)
+        { }
+    }
 }
