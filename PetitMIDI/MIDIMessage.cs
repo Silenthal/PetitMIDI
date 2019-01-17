@@ -39,12 +39,12 @@
         {
             get
             {
-                return this.rawData;
+                return rawData;
             }
 
             set
             {
-                this.rawData = value;
+                rawData = value;
             }
         }
 
@@ -55,12 +55,12 @@
         {
             get
             {
-                return this.status & 0x0F;
+                return status & 0x0F;
             }
 
             set
             {
-                this.status = (byte)((this.status & 0xF0) | (value & 0x0F));
+                status = (byte)((status & 0xF0) | (value & 0x0F));
             }
         }
 
@@ -71,12 +71,12 @@
         {
             get
             {
-                return (MessageType)(this.status & 0xF0);
+                return (MessageType)(status & 0xF0);
             }
 
             set
             {
-                this.status = (byte)((this.status & 0x0F) | ((byte)value));
+                status = (byte)((status & 0x0F) | ((byte)value));
             }
         }
 
@@ -87,12 +87,12 @@
         {
             get
             {
-                return this.data1 & 0x7F;
+                return data1 & 0x7F;
             }
 
             set
             {
-                this.data1 = (byte)(value & 0x7F);
+                data1 = (byte)(value & 0x7F);
             }
         }
 
@@ -103,12 +103,12 @@
         {
             get
             {
-                return this.data2 & 0x7F;
+                return data2 & 0x7F;
             }
 
             set
             {
-                this.data2 = (byte)(value & 0x7F);
+                data2 = (byte)(value & 0x7F);
             }
         }
 
@@ -119,11 +119,11 @@
         {
             get
             {
-                return (ControlChangeType)this.data1;
+                return (ControlChangeType)data1;
             }
             set
             {
-                this.data1 = (byte)value;
+                data1 = (byte)value;
             }
         }
 
@@ -134,12 +134,12 @@
         {
             get
             {
-                return this.Data2;
+                return Data2;
             }
 
             set
             {
-                this.Data2 = value;
+                Data2 = value;
             }
         }
     }

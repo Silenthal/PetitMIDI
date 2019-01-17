@@ -8,10 +8,11 @@
     /// </summary>
     public class WaveGenerator : WaveProvider32
     {
+        private const float ampScale = 0.08f;
+        private static Random r = new Random();
+
         private int sample = 0;
         private float frequency = 440f;
-        private float ampScale = 0.08f;
-        private Random r = new Random();
         private Envelope envelope;
 
         /// <summary>
@@ -25,7 +26,7 @@
             }
             set
             {
-                sample = (int)((sample * frequency) / value);
+                sample = (int)(sample * frequency / value);
                 frequency = value;
             }
         }

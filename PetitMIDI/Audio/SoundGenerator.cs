@@ -142,7 +142,7 @@
             mixer.SetDuty(channel, newDuty);
         }
 
-        private float[] frequencyTable = new float[128]
+        private readonly float[] frequencyTable = new float[128]
         {
             8.1758f,
             8.66196f,

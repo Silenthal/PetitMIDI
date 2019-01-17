@@ -4,10 +4,19 @@
 
     public class MixProvider : WaveProvider32
     {
-        private WaveGenerator[] genArr = new WaveGenerator[8];
+        private WaveGenerator[] genArr;
 
-        public MixProvider()
+        public MixProvider(int channelCount = 8)
         {
+            if (channelCount < 1)
+            {
+                channelCount = 1;
+            }
+            if (channelCount > 8)
+            {
+                channelCount = 8;
+            }
+            genArr = new WaveGenerator[channelCount];
             for (int i = 0; i < genArr.Length; i++)
             {
                 genArr[i] = new WaveGenerator(WaveType.Square);

@@ -13,7 +13,7 @@ namespace PetitMIDI.Audio
         /// </summary>
         public float Output { get; private set; }
 
-        private EnvelopeState state = EnvelopeState.Idle;
+        public EnvelopeState State { get; private set; } = EnvelopeState.Idle;
 
         private float attackRate;
         private float decayRate;
@@ -34,6 +34,12 @@ namespace PetitMIDI.Audio
             SetDefaults(sampleRate);
         }
 
+        public void Reset()
+        {
+            State = EnvelopeState.Idle;
+            Output = 0.0f;
+        }
+
         public void SetDefaults(int sampleRate)
         {
             SetAttack(0, sampleRate);
@@ -50,7 +56,7 @@ namespace PetitMIDI.Audio
         /// <returns>The value on the ADSR curve to apply to the signal.</returns>
         public float Process()
         {
-            switch (state)
+            switch (State)
             {
                 case EnvelopeState.Idle:
                     break;
@@ -60,7 +66,7 @@ namespace PetitMIDI.Audio
                     if (Output >= 1.0f)
                     {
                         Output = 1.0f;
-                        state = EnvelopeState.Decay;
+                        State = EnvelopeState.Decay;
                     }
                     break;
 
@@ -69,7 +75,7 @@ namespace PetitMIDI.Audio
                     if (Output <= sustainLevel)
                     {
                         Output = sustainLevel;
-                        state = EnvelopeState.Sustain;
+                        State = EnvelopeState.Sustain;
                     }
                     break;
 
@@ -81,27 +87,22 @@ namespace PetitMIDI.Audio
                     if (Output <= 0.0f)
                     {
                         Output = 0.0f;
-                        state = EnvelopeState.Idle;
+                        State = EnvelopeState.Idle;
                     }
                     break;
             }
             return Output;
         }
 
-        public EnvelopeState GetCurrentState()
-        {
-            return state;
-        }
-
         public void Gate(bool isActive)
         {
             if (isActive)
             {
-                state = EnvelopeState.Attack;
+                State = EnvelopeState.Attack;
             }
-            else if (state != EnvelopeState.Idle)
+            else if (State != EnvelopeState.Idle)
             {
-                state = EnvelopeState.Release;
+                State = EnvelopeState.Release;
             }
         }
 
@@ -157,12 +158,6 @@ namespace PetitMIDI.Audio
             targetRatioDR = targetRatio;
             decayBase = (float)((sustainLevel - targetRatioDR) * (1.0 - decayCoef));
             releaseBase = (float)(-targetRatioDR * (1.0 - releaseCoef));
-        }
-
-        public void Reset()
-        {
-            state = EnvelopeState.Idle;
-            Output = 0.0f;
         }
 
         private float calcCoef(float rate, float targetRatio)
