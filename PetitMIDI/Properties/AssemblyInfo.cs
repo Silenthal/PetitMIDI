@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("PetitMIDI")]
-[assembly: AssemblyCopyright("Copyright © Silenthal 2012")]
+[assembly: AssemblyCopyright("Copyright © Silenthal 2012-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
