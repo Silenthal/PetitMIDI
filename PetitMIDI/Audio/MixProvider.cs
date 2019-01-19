@@ -6,15 +6,15 @@
     {
         private WaveGenerator[] genArr;
 
-        public MixProvider(int channelCount = 8)
+        public MixProvider(int channelCount)
         {
             if (channelCount < 1)
             {
                 channelCount = 1;
             }
-            if (channelCount > 8)
+            if (channelCount > Config.Channel.Count)
             {
-                channelCount = 8;
+                channelCount = Config.Channel.Count;
             }
             genArr = new WaveGenerator[channelCount];
             for (int i = 0; i < genArr.Length; i++)

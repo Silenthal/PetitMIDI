@@ -59,7 +59,6 @@
     <Compile Include="Audio\WaveType.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ControlChangeType.cs" />
-    <Compile Include="HighResTimer.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="MIDIMessage.cs" />
     <Compile Include="MML\Event\MMLEventTag.cs" />

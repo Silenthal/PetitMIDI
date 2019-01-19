@@ -124,8 +124,8 @@
         /// <param name="channelOpen">If the channel is currently open, then do </param>
         public void ResetChannelDefaults()
         {
-            velocity = 127;
-            octave = 5;
+            velocity = Config.Velocity.Default;
+            octave = Config.Octave.Default;
             noteTimeValue = 4;
             nextUpdateTime = 0;
             lastNotePlayed = 0;
@@ -141,7 +141,7 @@
         {
             mStack.Clear();
             ChangeInstrument(0);
-            ChangeVolume(127);
+            ChangeVolume(Config.Volume.MaxValue);
         }
 
         /// <summary>
@@ -152,7 +152,7 @@
         {
             mStack.PushBack(mml);
             ChangeInstrument(0);
-            ChangeVolume(127);
+            ChangeVolume(Config.Volume.MaxValue);
         }
 
         /// <summary>
@@ -393,13 +393,13 @@
         private void ChangeVelocity(int newVelocity)
         {
             velocity = newVelocity;
-            if (velocity < 0)
+            if (velocity < Config.Velocity.MinValue)
             {
-                velocity = 0;
+                velocity = Config.Velocity.MinValue;
             }
-            if (velocity > 127)
+            if (velocity > Config.Velocity.MaxValue)
             {
-                velocity = 127;
+                velocity = Config.Velocity.MaxValue;
             }
         }
 
@@ -409,13 +409,13 @@
         /// <param name="newVolume">The volume to adjust the channel to.</param>
         private void ChangeVolume(int newVolume)
         {
-            if (newVolume < 0)
+            if (newVolume < Config.Volume.MinValue)
             {
-                newVolume = 0;
+                newVolume = Config.Volume.MinValue;
             }
-            if (newVolume > 127)
+            if (newVolume > Config.Volume.MaxValue)
             {
-                newVolume = 127;
+                newVolume = Config.Volume.MaxValue;
             }
             MIDIMessage mst = new MIDIMessage();
             mst.Channel = channelID;
@@ -510,13 +510,13 @@
         private void ChangeOctave(int newOctave)
         {
             octave = newOctave + 1;
-            if (octave < 1)
+            if (octave < Config.Octave.MinValue)
             {
-                octave = 1;
+                octave = Config.Octave.MinValue;
             }
-            else if (octave > 8)
+            else if (octave > Config.Octave.MaxValue)
             {
-                octave = 8;
+                octave = Config.Octave.MaxValue;
             }
         }
 
@@ -526,9 +526,9 @@
         private void IncreaseOctave()
         {
             octave++;
-            if (octave > 9)
+            if (octave > Config.Octave.MaxValue)
             {
-                octave = 9;
+                octave = Config.Octave.MaxValue;
             }
         }
 
@@ -538,9 +538,9 @@
         private void DecreaseOctave()
         {
             octave--;
-            if (octave < 1)
+            if (octave < Config.Octave.MinValue)
             {
-                octave = 1;
+                octave = Config.Octave.MinValue;
             }
         }
 

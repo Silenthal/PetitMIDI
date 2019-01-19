@@ -1,6 +1,7 @@
 ﻿namespace PetitMIDI.MML
 {
     using PetitMIDI.Audio;
+    using System.Diagnostics;
 
     /// <summary>
     /// A class to play MML.
@@ -17,7 +18,7 @@
         /// <summary>
         /// Timer for managing play time.
         /// </summary>
-        private HighResTimer timer = new HighResTimer();
+        private Stopwatch timer = new Stopwatch();
 
         /// <summary>
         /// Specifies whether an MML string is currently being played.
@@ -32,7 +33,7 @@
         /// <summary>
         /// The channels of the player.
         /// </summary>
-        private MMLChannel[] channels = new MMLChannel[8];
+        private MMLChannel[] channels = new MMLChannel[Config.Channel.Count];
 
         #endregion Private Members
 
@@ -113,12 +114,12 @@
             }
 
             running = true;
-            timer.Start();
+            timer.Restart();
             while (running)
             {
                 for (int index = 0; index < channels.Length; index++)
                 {
-                    channels[index].Update(timer.ElapsedTime());
+                    channels[index].Update(timer.Elapsed.TotalSeconds);
                     running |= !channels[index].IsDone;
                 }
             }
@@ -129,7 +130,7 @@
         /// </summary>
         public void ResetChannels()
         {
-            tempo = 120;
+            tempo = Config.Tempo.Default;
             foreach (MMLChannel c in channels)
             {
                 c.ClearMML();
@@ -144,7 +145,7 @@
         /// <param name="mml">THe MML to load the channel with.</param>
         public void LoadChannelMML(int channel, string mml)
         {
-            if (channel >= 0 && channel < 8)
+            if (channel >= 0 && channel <= channels.Length)
             {
                 channels[channel].LoadMML(mml);
             }
@@ -157,7 +158,7 @@
         /// <returns>The time the note takes, in seconds.</returns>
         private double GetNoteTime(double noteValue)
         {
-            double secondsPerWholeNote = 240.0 / tempo;
+            double secondsPerWholeNote = (double)Config.Tempo.MaxValue / tempo;
             double portionOfWhole = 1 / noteValue;
             return secondsPerWholeNote * portionOfWhole;
         }
@@ -169,13 +170,13 @@
         private void ChangeTempo(int newTempo)
         {
             tempo = newTempo;
-            if (tempo < 1)
+            if (tempo < Config.Tempo.MinValue)
             {
-                tempo = 1;
+                tempo = Config.Tempo.MinValue;
             }
-            else if (tempo > 240)
+            else if (tempo > Config.Tempo.MaxValue)
             {
-                tempo = 240;
+                tempo = Config.Tempo.MaxValue;
             }
         }
 

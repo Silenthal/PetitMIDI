@@ -13,9 +13,9 @@
 
         private WasapiOut waveOut = new WasapiOut(AudioClientShareMode.Shared, 3);
 
-        private MixProvider mixer = new MixProvider();
+        private MixProvider mixer = new MixProvider(Config.Channel.Count);
 
-        private NoteStyle[] noteMode = new NoteStyle[8];
+        private NoteStyle[] noteMode = new NoteStyle[Config.Channel.Count];
 
         public SoundGenerator()
         {
@@ -42,7 +42,7 @@
             ms.ControlType = ControlChangeType.AllNotesOff;
             midiOut.Send(ms.RawData);
             midiOut.Close();
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Config.Channel.Count; i++)
             {
                 mixer.Gate(i, false);
             }
@@ -51,7 +51,7 @@
 
         public void ChangeMode(int channel, NoteStyle mode)
         {
-            if (channel >= 0 && channel < 8)
+            if (channel >= 0 && channel < Config.Channel.Count)
             {
                 noteMode[channel] = mode;
                 if (mode == NoteStyle.Noise)
