@@ -538,7 +538,6 @@
                 case 'B':
                     {
                         NoteEvent ne = new NoteEvent(noteVal[PopChar() - 'A']);
-                        int dotCount = 0;
                         bool noteLenSet = false;
                         while (true)
                         {
@@ -557,28 +556,17 @@
                             else if (PeekChar() == '.')
                             {
                                 PopChar();
-                                if (dotCount++ < 2)
-                                {
-                                    ne.Multiplier *= 1.5;
-                                }
+                                ne.IncrementMultiplier();
                             }
                             else if (PeekChar() == '+' || PeekChar() == '#')
                             {
                                 PopChar();
-                                ne.BaseNote++;
-                                if (ne.BaseNote > 127)
-                                {
-                                    return new InvalidEvent();
-                                }
+                                ne.IncrementBaseNote();
                             }
                             else if (PeekChar() == '-')
                             {
                                 PopChar();
-                                ne.BaseNote--;
-                                if (ne.BaseNote < 0)
-                                {
-                                    return new InvalidEvent();
-                                }
+                                ne.DecrementBaseNote();
                             }
                             else
                             {

@@ -300,7 +300,11 @@
                 case MMLEventTag.Note:
                     {
                         NoteEvent noteTemp = command as NoteEvent;
-                        noteTemp.BaseNote += octave * 12;
+                        noteTemp.BaseNote += (octave + noteTemp.OctaveOffset) * 12;
+                        if (noteTemp.BaseNote < 0 || noteTemp.BaseNote > 127)
+                        {
+                            break;
+                        }
                         if (noteTemp.NoteValue == -1)
                         {
                             noteTemp.NoteValue = noteTimeValue;

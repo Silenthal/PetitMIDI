@@ -7,7 +7,8 @@
     {
         public int BaseNote;
         public int NoteValue;
-        public double Multiplier;
+        private double Multiplier;
+        public int OctaveOffset = 0;
 
         public double ActualNoteValue
         {
@@ -27,6 +28,37 @@
             BaseNote = note & 0x7F;
             NoteValue = -1;
             Multiplier = 1;
+            OctaveOffset = 0;
+        }
+
+        public void IncrementBaseNote()
+        {
+            if (++BaseNote > 11)
+            {
+                BaseNote = 0;
+                OctaveOffset++;
+            }
+        }
+
+        public void DecrementBaseNote()
+        {
+            if (--BaseNote < 0)
+            {
+                BaseNote = 11;
+                OctaveOffset--;
+            }
+        }
+
+        public void IncrementMultiplier()
+        {
+            if (Multiplier == 1)
+            {
+                Multiplier = 1.5;
+            }
+            else
+            {
+                Multiplier = 2.25;
+            }
         }
     }
 }
