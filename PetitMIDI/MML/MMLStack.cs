@@ -425,13 +425,27 @@
                 case '<': // Octave Increase
                     {
                         PopChar();
-                        return new OctaveIncreaseEvent();
+                        if (Config.IsOctaveReversed)
+                        {
+                            return new OctaveDecreaseEvent();
+                        }
+                        else
+                        {
+                            return new OctaveIncreaseEvent();
+                        }
                     }
 
                 case '>': // Octave Decrease
                     {
                         PopChar();
-                        return new OctaveDecreaseEvent();
+                        if (Config.IsOctaveReversed)
+                        {
+                            return new OctaveIncreaseEvent();
+                        }
+                        else
+                        {
+                            return new OctaveDecreaseEvent();
+                        }
                     }
 
                 case '(': // VelocityIncrease

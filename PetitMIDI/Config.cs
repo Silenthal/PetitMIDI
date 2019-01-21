@@ -2,6 +2,7 @@
 {
     public static class Config
     {
+        public static bool IsOctaveReversed = false;
         public static float AmplitudeScale = 0.08f;
 
         public static class Tempo

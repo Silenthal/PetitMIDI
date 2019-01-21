@@ -43,5 +43,15 @@
             StartInterpret(mainTextBox.Text.Replace("\r", "").Replace("\n", ""));
             mainTextBox.Focus();
         }
+        public void StopIt(object sender, RoutedEventArgs e)
+        {
+            petitMML.StopRunning();
+            mainTextBox.Focus();
+        }
+
+        private void MenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            Config.IsOctaveReversed = IsOctaveReversedMenuItem.IsChecked == true;
+        }
     }
 }

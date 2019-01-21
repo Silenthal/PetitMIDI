@@ -75,6 +75,7 @@
         public void StopRunning()
         {
             running = false;
+            StopAllNotes();
         }
 
         /// <summary>

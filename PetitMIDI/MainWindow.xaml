@@ -6,17 +6,29 @@
         Width="525"
         FocusManager.FocusedElement="{Binding ElementName=mainTextBox}">
     <Window.Resources>
-        <Style x:Key="flatStyle" TargetType="Button">
+        <Style x:Key="flatStyleGreen" TargetType="Button">
             <Setter Property="FontSize" Value="20" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="Border"
-                                Background="Green" >
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                        <Border x:Name="Border" Background="Green" >
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="flatStyleRed" TargetType="Button">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border" Background="Red" >
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -31,6 +43,7 @@
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
             <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
             <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
@@ -44,15 +57,23 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Button Grid.Row="0"
-                Style="{StaticResource flatStyle}"
-                Content="▶"
-                Click="RunIt" />
-        <TextBox Grid.Row="1"
-                Name="mainTextBox"
-                Style="{StaticResource textWindowStyle}"/>
+        <Menu Grid.Row="0">
+            <MenuItem Header="Options">
+                <MenuItem Name="IsOctaveReversedMenuItem" Header="Reverse Octave Marks" IsCheckable="True" Checked="MenuItem_Checked" Unchecked="MenuItem_Checked"/>
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Style="{StaticResource flatStyleGreen}" Content="▶" Click="RunIt" />
+            <Button Grid.Column="1" Style="{StaticResource flatStyleRed}" Content="■" Click="StopIt" />
+        </Grid>
+        <TextBox Grid.Row="2" Name="mainTextBox" Style="{StaticResource textWindowStyle}"/>
     </Grid>
 </Window>
