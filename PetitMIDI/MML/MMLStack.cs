@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Text;
     using System.Text.RegularExpressions;
+    using static Constants;
 
     /// <summary>
     /// A stack for MML evaluation.
@@ -170,7 +171,7 @@
             {
                 return new NoneEvent();
             }
-            
+
             if (PeekChar() == '[')
             {
                 PopChar();
@@ -190,7 +191,12 @@
                         PopChar();
                         if (char.IsDigit(PeekChar()))
                         {
-                            return new VelocityEvent(int.Parse(PopNumber()));
+                            int outNum = int.Parse(PopNumber());
+                            if (outNum < Velocity.MinValue || outNum > Velocity.MaxValue)
+                            {
+                                return new InvalidEvent();
+                            }
+                            return new VelocityEvent(outNum);
                         }
                         else
                         {
@@ -203,13 +209,23 @@
                         PopChar();
                         if (char.IsDigit(PeekChar())) // Instrument
                         {
-                            return new InstrumentEvent(int.Parse(PopNumber()));
+                            int outNum = int.Parse(PopNumber());
+                            if (outNum < Instrument.MinValue || outNum > Instrument.MaxValue)
+                            {
+                                return new InvalidEvent();
+                            }
+                            return new InstrumentEvent(outNum);
                         }
                         else if (PeekChar() == 'D') // Detune
                         {
                             PopChar();
                             if (char.IsDigit(PeekChar()))
                             {
+                                int outNum = int.Parse(PopNumber());
+                                if (outNum < Detune.MinValue || outNum > Detune.MaxValue)
+                                {
+                                    return new InvalidEvent();
+                                }
                                 return new DetuneEvent(int.Parse(PopNumber()));
                             }
                             else
@@ -222,7 +238,12 @@
                             PopChar();
                             if (char.IsDigit(PeekChar()))
                             {
-                                return new VolumeEvent(int.Parse(PopNumber()));
+                                int outNum = int.Parse(PopNumber());
+                                if (outNum < Volume.MinValue || outNum > Volume.MaxValue)
+                                {
+                                    return new InvalidEvent();
+                                }
+                                return new VolumeEvent(outNum);
                             }
                             else
                             {
@@ -236,8 +257,7 @@
                             {
                                 EnvelopeEvent e = new EnvelopeEvent(0, 0, 0, 0);
                                 bool goodParsing = true;
-                                int temp;
-                                goodParsing |= int.TryParse(PopNumber(), out temp);
+                                goodParsing |= int.TryParse(PopNumber(), out int temp);
                                 e.Attack = temp;
                                 goodParsing |= PopChar() == ',';
                                 goodParsing |= int.TryParse(PopNumber(), out temp);
@@ -295,8 +315,7 @@
                                 {
                                     TremoloEvent e = new TremoloEvent(0, 0, 0, 0);
                                     bool goodParsing = true;
-                                    int temp;
-                                    goodParsing |= int.TryParse(PopNumber(), out temp);
+                                    goodParsing |= int.TryParse(PopNumber(), out int temp);
                                     e.Depth = temp;
                                     goodParsing |= PopChar() == ',';
                                     goodParsing |= int.TryParse(PopNumber(), out temp);
@@ -328,8 +347,7 @@
                                 {
                                     VibratoEvent e = new VibratoEvent(0, 0, 0, 0);
                                     bool goodParsing = true;
-                                    int temp;
-                                    goodParsing |= int.TryParse(PopNumber(), out temp);
+                                    goodParsing |= int.TryParse(PopNumber(), out int temp);
                                     e.Depth = temp;
                                     goodParsing |= PopChar() == ',';
                                     goodParsing |= int.TryParse(PopNumber(), out temp);
@@ -370,7 +388,12 @@
                         PopChar();
                         if (char.IsDigit(PeekChar()))
                         {
-                            return new LengthEvent(int.Parse(PopNumber()));
+                            int outNum = int.Parse(PopNumber());
+                            if (outNum < NoteLength.MinValue || outNum > NoteLength.MaxValue)
+                            {
+                                return new InvalidEvent();
+                            }
+                            return new LengthEvent(outNum);
                         }
                         else
                         {
@@ -383,7 +406,12 @@
                         PopChar();
                         if (char.IsDigit(PeekChar()))
                         {
-                            return new OctaveEvent(int.Parse(PopNumber()));
+                            int outNum = int.Parse(PopNumber());
+                            if (outNum < Octave.MinValue || outNum > Octave.MaxValue)
+                            {
+                                return new InvalidEvent();
+                            }
+                            return new OctaveEvent(outNum);
                         }
                         else
                         {
@@ -396,7 +424,12 @@
                         PopChar();
                         if (char.IsDigit(PeekChar()))
                         {
-                            return new PanEvent(int.Parse(PopNumber()));
+                            int outNum = int.Parse(PopNumber());
+                            if (outNum < Pan.MinValue || outNum > Pan.MaxValue)
+                            {
+                                return new InvalidEvent();
+                            }
+                            return new PanEvent(outNum);
                         }
                         else
                         {
@@ -410,7 +443,7 @@
                         if (char.IsDigit(PeekChar()))
                         {
                             int outNum = int.Parse(PopNumber());
-                            if (outNum < 1 || outNum > 512)
+                            if (outNum < Tempo.MinValue || outNum > Tempo.MaxValue)
                             {
                                 return new InvalidEvent();
                             }
@@ -453,7 +486,12 @@
                         PopChar();
                         if (char.IsDigit(PeekChar()))
                         {
-                            return new VelocityIncreaseEvent(int.Parse(PopNumber()));
+                            int outNum = int.Parse(PopNumber());
+                            if (outNum < Velocity.MinValue || outNum > Velocity.MaxValue)
+                            {
+                                return new InvalidEvent();
+                            }
+                            return new VelocityIncreaseEvent(outNum);
                         }
                         else
                         {
@@ -466,7 +504,12 @@
                         PopChar();
                         if (char.IsDigit(PeekChar()))
                         {
-                            return new VelocityDecreaseEvent(int.Parse(PopNumber()));
+                            int outNum = int.Parse(PopNumber());
+                            if (outNum < Velocity.MinValue || outNum > Velocity.MaxValue)
+                            {
+                                return new InvalidEvent();
+                            }
+                            return new VelocityDecreaseEvent(outNum);
                         }
                         else
                         {
@@ -527,19 +570,18 @@
                 case 'N': // Note
                     {
                         PopChar();
-                        string pc = "";
-                        int conv = 0;
-                        while (char.IsDigit(PeekChar()))
+                        if (char.IsDigit(PeekChar()))
                         {
-                            pc += PopChar();
-                        }
-                        if (pc.Length == 0 || !int.TryParse(pc, out conv))
-                        {
-                            return new InvalidEvent();
+                            int outNum = int.Parse(PopNumber());
+                            if (outNum < Note.MinValue || outNum > Note.MaxValue)
+                            {
+                                return new InvalidEvent();
+                            }
+                            return new PitchEvent(outNum);
                         }
                         else
                         {
-                            return new PitchEvent(conv);
+                            return new InvalidEvent();
                         }
                     }
 
@@ -559,7 +601,12 @@
                             {
                                 if (!noteLenSet)
                                 {
-                                    ne.NoteValue = int.Parse(PopNumber());
+                                    int outNum = int.Parse(PopNumber());
+                                    if (outNum < NoteLength.MinValue || outNum > NoteLength.MaxValue)
+                                    {
+                                        return new InvalidEvent();
+                                    }
+                                    ne.NoteValue = outNum;
                                     noteLenSet = true;
                                 }
                                 else

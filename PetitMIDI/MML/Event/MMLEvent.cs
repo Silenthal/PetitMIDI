@@ -1,6 +1,5 @@
 ﻿namespace PetitMIDI.MML.Event
 {
-
     /// <summary>
     /// Represents a generic MIDI event.
     /// </summary>

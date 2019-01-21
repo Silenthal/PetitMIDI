@@ -58,6 +58,7 @@
     <Compile Include="Audio\EnvelopeState.cs" />
     <Compile Include="Audio\WaveType.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="ControlChangeType.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="MIDIMessage.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="MML\MMLPlayer.cs" />
     <Compile Include="Audio\MixProvider.cs" />
     <Compile Include="Audio\WaveGenerator.cs" />
+    <Compile Include="Utility.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

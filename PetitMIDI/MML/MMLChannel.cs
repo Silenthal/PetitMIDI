@@ -110,13 +110,7 @@
         /// <summary>
         /// Returns true if the channel is currently empty.
         /// </summary>
-        public bool IsDone
-        {
-            get
-            {
-                return mStack.IsEmpty;
-            }
-        }
+        public bool IsDone => mStack.IsEmpty;
 
         /// <summary>
         /// Resets the default values for the MML being played.
@@ -141,7 +135,7 @@
         {
             mStack.Clear();
             ChangeInstrument(0);
-            ChangeVolume(Config.Volume.MaxValue);
+            ChangeVolume(Constants.Volume.MaxValue);
         }
 
         /// <summary>
@@ -152,7 +146,7 @@
         {
             mStack.PushBack(mml);
             ChangeInstrument(0);
-            ChangeVolume(Config.Volume.MaxValue);
+            ChangeVolume(Constants.Volume.MaxValue);
         }
 
         /// <summary>
@@ -396,15 +390,7 @@
         /// <param name="newVelocity">The new velocity.</param>
         private void ChangeVelocity(int newVelocity)
         {
-            velocity = newVelocity;
-            if (velocity < Config.Velocity.MinValue)
-            {
-                velocity = Config.Velocity.MinValue;
-            }
-            if (velocity > Config.Velocity.MaxValue)
-            {
-                velocity = Config.Velocity.MaxValue;
-            }
+            velocity = Utility.Clamp(newVelocity, Constants.Velocity.MinValue, Constants.Velocity.MaxValue);
         }
 
         /// <summary>
@@ -413,19 +399,11 @@
         /// <param name="newVolume">The volume to adjust the channel to.</param>
         private void ChangeVolume(int newVolume)
         {
-            if (newVolume < Config.Volume.MinValue)
-            {
-                newVolume = Config.Volume.MinValue;
-            }
-            if (newVolume > Config.Volume.MaxValue)
-            {
-                newVolume = Config.Volume.MaxValue;
-            }
             MIDIMessage mst = new MIDIMessage();
             mst.Channel = channelID;
             mst.Status = MessageType.ControlChange;
             mst.ControlType = ControlChangeType.ChannelVolume;
-            mst.ControlValue = newVolume;
+            mst.ControlValue = Utility.Clamp(newVolume, Constants.Volume.MinValue, Constants.Volume.MaxValue); ;
             SendEvent(mst);
         }
 
@@ -435,15 +413,7 @@
         /// <param name="newNoteLength">The new note length.</param>
         private void ChangeNoteLength(int newNoteLength)
         {
-            noteTimeValue = newNoteLength;
-            if (noteTimeValue < 1)
-            {
-                noteTimeValue = 1;
-            }
-            else if (noteTimeValue > 192)
-            {
-                noteTimeValue = 192;
-            }
+            noteTimeValue = Utility.Clamp(newNoteLength, Constants.NoteLength.MinValue, Constants.NoteLength.MaxValue);
         }
 
         /// <summary>
@@ -496,14 +466,14 @@
         /// <summary>
         /// Changes the pan (location of sound between left and right speakers).
         /// </summary>
-        /// <param name="pan">The pan value (0-127 inclusive).</param>
-        private void ChangePan(int pan)
+        /// <param name="newPan">The pan value (0-127 inclusive).</param>
+        private void ChangePan(int newPan)
         {
             MIDIMessage mst = new MIDIMessage();
             mst.Status = MessageType.ControlChange;
             mst.Channel = channelID;
             mst.ControlType = ControlChangeType.Pan;
-            mst.ControlValue = pan;
+            mst.ControlValue = Utility.Clamp(newPan, Constants.Pan.MinValue, Constants.Pan.MaxValue);
             SendEvent(mst);
         }
 
@@ -513,15 +483,7 @@
         /// <param name="newOctave">The octave to change to.</param>
         private void ChangeOctave(int newOctave)
         {
-            octave = newOctave + 1;
-            if (octave < Config.Octave.MinValue)
-            {
-                octave = Config.Octave.MinValue;
-            }
-            else if (octave > Config.Octave.MaxValue)
-            {
-                octave = Config.Octave.MaxValue;
-            }
+            octave = Utility.Clamp(newOctave, Constants.Octave.MinValue, Constants.Octave.MaxValue) + 1;
         }
 
         /// <summary>
@@ -529,11 +491,7 @@
         /// </summary>
         private void IncreaseOctave()
         {
-            octave++;
-            if (octave > Config.Octave.MaxValue)
-            {
-                octave = Config.Octave.MaxValue;
-            }
+            ChangeOctave(octave);
         }
 
         /// <summary>
@@ -541,11 +499,7 @@
         /// </summary>
         private void DecreaseOctave()
         {
-            octave--;
-            if (octave < Config.Octave.MinValue)
-            {
-                octave = Config.Octave.MinValue;
-            }
+            ChangeOctave(octave - 2);
         }
 
         /// <summary>

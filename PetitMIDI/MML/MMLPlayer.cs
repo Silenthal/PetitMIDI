@@ -2,6 +2,7 @@
 {
     using PetitMIDI.Audio;
     using System.Diagnostics;
+    using static Constants;
 
     /// <summary>
     /// A class to play MML.
@@ -159,7 +160,7 @@
         /// <returns>The time the note takes, in seconds.</returns>
         private double GetNoteTime(double noteValue)
         {
-            double secondsPerWholeNote = (double)Config.Tempo.MaxValue / tempo;
+            double secondsPerWholeNote = (double)Tempo.MaxValue / tempo;
             double portionOfWhole = 1 / noteValue;
             return secondsPerWholeNote * portionOfWhole;
         }
@@ -170,15 +171,7 @@
         /// <param name="newTempo">The new tempo.</param>
         private void ChangeTempo(int newTempo)
         {
-            tempo = newTempo;
-            if (tempo < Config.Tempo.MinValue)
-            {
-                tempo = Config.Tempo.MinValue;
-            }
-            else if (tempo > Config.Tempo.MaxValue)
-            {
-                tempo = Config.Tempo.MaxValue;
-            }
+            tempo = Utility.Clamp(newTempo, Tempo.MinValue, Tempo.MaxValue);
         }
 
         /// <summary>
