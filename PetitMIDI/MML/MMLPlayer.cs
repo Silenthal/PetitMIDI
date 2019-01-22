@@ -109,8 +109,12 @@
                 {
                     if (channelMML[i] != string.Empty && char.IsDigit(channelMML[i][0]))
                     {
-                        int chan = (int)char.GetNumericValue(channelMML[i], 0);
-                        LoadChannelMML(chan, channelMML[i].Substring(1));
+                        string chan = "" + channelMML[i][0];
+                        if (channelMML[i].Length > 1 && char.IsDigit(channelMML[i][1]))
+                        {
+                            chan += channelMML[i][1];
+                        }
+                        LoadChannelMML(int.Parse(chan), channelMML[i].Substring(chan.Length));
                     }
                 }
             }
@@ -160,7 +164,7 @@
         /// <returns>The time the note takes, in seconds.</returns>
         private double GetNoteTime(double noteValue)
         {
-            double secondsPerWholeNote = (double)Tempo.MaxValue / tempo;
+            double secondsPerWholeNote = (double)240 / tempo;
             double portionOfWhole = 1 / noteValue;
             return secondsPerWholeNote * portionOfWhole;
         }

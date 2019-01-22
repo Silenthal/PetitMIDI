@@ -12,7 +12,7 @@
 
         public static class Channel
         {
-            public static int Count = 8;
+            public static int Count = 16;
         }
 
         public static class Volume

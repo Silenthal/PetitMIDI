@@ -35,12 +35,7 @@
         public static class Tempo
         {
             public const int MinValue = 1;
-            public const int MaxValue = 240;
-        }
-
-        public static class Channel
-        {
-            public static int Count = 8;
+            public const int MaxValue = 512;
         }
 
         public static class Volume
